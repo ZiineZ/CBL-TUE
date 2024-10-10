@@ -44,7 +44,8 @@ public class MyWindow extends JFrame {
 
     void addHandlers() {
         terminalgui.add(new terminalHandler(terminalgui));
-        scoregui.add(new ScoreHandler(scoregui));
+        ScoreHandler scorehandler = new ScoreHandler();
+        scorehandler.scoreHandler(scoregui);
     }
     
 }

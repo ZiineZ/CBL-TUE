@@ -1,13 +1,13 @@
 package Handlers;
 
-import java.awt.Label;
+import javax.swing.*;
 
-import javax.swing.JPanel;
-
-public class ScoreHandler extends Label {
+public class ScoreHandler {
     
-    public ScoreHandler(JPanel ParentPanel) {
-        
+    public void scoreHandler (JPanel parentPanel) {
+        JLabel f = new JLabel("Label Example");
+        f.setVisible(true);
+        parentPanel.add(f);
     }
 
 }
