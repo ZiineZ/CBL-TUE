@@ -1,13 +1,10 @@
 package Handlers;
 
 import javax.swing.*;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.*;
 
-public class terminalHandler extends JTextArea implements ActionListener, FocusListener {
+public class terminalHandler extends JTextArea {
 
     public terminalHandler(JPanel parentPanel) {
         this.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
@@ -23,23 +20,33 @@ public class terminalHandler extends JTextArea implements ActionListener, FocusL
 
         parentPanel.revalidate();
         parentPanel.repaint();
+
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                handleKeyPress(e);
+            }
+        });
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Action Performed!");
+    // Separate method to handle key presses
+    public void handleKeyPress(KeyEvent e) {
+        maintainCommand();
     }
 
-    @Override
-    public void focusGained(FocusEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'focusGained'");
+    public void maintainCommand(){
+        SwingUtilities.invokeLater(() -> {
+            String command = this.getText();
+            if (command.isEmpty() || command.length() == 1) {
+                this.setText("> ");
+            }
+            else if (command.charAt(0) != '>' || command.charAt(1) != ' ') {
+                    this.insert("> ", 0);
+            }
+        });
     }
 
-    @Override
-    public void focusLost(FocusEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'focusLost'");
+    public void executeCommand(String command) {
+        
     }
-
 }
