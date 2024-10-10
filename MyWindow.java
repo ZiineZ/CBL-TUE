@@ -22,9 +22,9 @@ public class MyWindow extends JFrame {
     }
 
     void initPanels(JFrame frame){
-        frame.setLayout(new BorderLayout(3, 3));
+        frame.setLayout(new BorderLayout(5, 5));
 
-        JPanel leftPanel = new JPanel(new GridLayout(2, 1, 3, 3));
+        JPanel leftPanel = new JPanel(new GridLayout(2, 1, 5, 5));
 
         visualgui.setBackground(Color.RED);
         terminalgui.setBackground(Color.GREEN);
