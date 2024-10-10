@@ -22,24 +22,22 @@ public class MyWindow extends JFrame {
     }
 
     void initPanels(JFrame frame){
-        final int margin = 3;
+        frame.setLayout(new BorderLayout(3, 3));
 
-        visualgui.setBounds(0+margin,0+margin,(int)(frame.getWidth()/1.5)-margin,(frame.getHeight()/2) - margin);
-        terminalgui.setBounds(0+margin, (frame.getHeight() / 2) + margin, (int) (frame.getWidth() * 0.6667) - margin, (frame.getHeight() / 2) - 11*margin);
-        scoregui.setBounds((int) (frame.getWidth() * 0.6667)+margin, 0 + margin, (int) (frame.getWidth() * 0.3334) - 2*margin, frame.getHeight() - 11*margin);
+        JPanel leftPanel = new JPanel(new GridLayout(2, 1, 3, 3));
 
         visualgui.setBackground(Color.RED);
         terminalgui.setBackground(Color.GREEN);
         scoregui.setBackground(Color.BLUE);
 
-        visualgui.setVisible(true);
-        terminalgui.setVisible(true);
-        scoregui.setVisible(true);
+        leftPanel.add(visualgui);
+        leftPanel.add(terminalgui);
 
+        int frameWidth = frame.getWidth();
+        scoregui.setPreferredSize(new Dimension(frameWidth / 3, frame.getHeight()));
 
-        frame.add(visualgui);
-        frame.add(terminalgui);
-        frame.add(scoregui);
+        frame.add(leftPanel, BorderLayout.CENTER);
+        frame.add(scoregui, BorderLayout.EAST);
 
         addHandlers();
     }
