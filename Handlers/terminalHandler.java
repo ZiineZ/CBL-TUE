@@ -31,27 +31,22 @@ public class terminalHandler extends JTextArea {
 
     // Separate method to handle key presses
     public void handleKeyPress(KeyEvent e) {
-
-        String command = this.getText();
-        if (this.getText().isEmpty()) {
-            this.setText(">");
-
-            else if (command.charAt(0) != '>') {
-                this.insert("> ", 0);
-            }
-    }
-
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            System.out.println("Enter key pressed!");
-            // Add your logic here
-        }
+        maintainCommand();
     }
 
     public void maintainCommand(){
-
+        SwingUtilities.invokeLater(() -> {
+            String command = this.getText();
+            if (command.isEmpty() || command.length() == 1) {
+                this.setText("> ");
+            }
+            else if (command.charAt(0) != '>' || command.charAt(1) != ' ') {
+                    this.insert("> ", 0);
+            }
+        });
     }
 
     public void executeCommand(String command) {
-
+        
     }
 }
