@@ -9,7 +9,7 @@ import java.awt.event.*;
 
 public class terminalHandler extends JTextArea {
 
-    private int immutableLength = 0;
+    private int immutableLength = 2;
     private String lastCommand = "";
 
     public terminalHandler(JPanel parentPanel) {
@@ -17,6 +17,8 @@ public class terminalHandler extends JTextArea {
         this.setBackground(Color.GREEN);
         this.setOpaque(true);
         this.setText("> ");
+        this.setCaretPosition(immutableLength);
+        
 
         JScrollPane scrollPane = new JScrollPane(this);
         scrollPane.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
@@ -49,6 +51,7 @@ public class terminalHandler extends JTextArea {
     }
 
     private void captureAndExecuteCommand() {
+
         String fulltext = this.getText();
         String currentCommand = fulltext.substring(immutableLength).trim();
 
@@ -57,12 +60,29 @@ public class terminalHandler extends JTextArea {
         executeCommand(currentCommand);
 
         append("\n> ");
-        immutableLength = this.getDocument().getLength();
+       setImmutableLength();
     }
 
     public void executeCommand(String command) {
         System.out.println("Executed command: " + command);
-        CommandProcessor cp = new CommandProcessor();
+        CommandProcessor cp = new CommandProcessor(this);
         cp.process(command);
+    }
+
+    public void setImmutableLength() {
+        immutableLength = this.getDocument().getLength();
+    }
+
+    public void addToTerminal(String text) {
+        this.append("\n" + text);
+        setImmutableLength();
+    }
+
+    public void clear() {
+        SwingUtilities.invokeLater(() -> {
+            this.setText("> ");
+            immutableLength = 2;
+            this.setCaretPosition(immutableLength);
+        });
     }
 }

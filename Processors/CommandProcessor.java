@@ -6,11 +6,18 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.*;
 
+import Handlers.terminalHandler;
+
 public class CommandProcessor {
+
+    terminalHandler myTerminalHandler;
 
     private Map<String, Runnable> commandlookup;
 
-    public CommandProcessor(){
+    public CommandProcessor(terminalHandler terminal){
+
+        myTerminalHandler = terminal;
+
         commandlookup = new HashMap();
         InnerCommandProcessor icp = new InnerCommandProcessor();
 
@@ -33,7 +40,7 @@ public class CommandProcessor {
         commandlookup.put("system.resources.scan()", icp::resourcesScan);
         commandlookup.put("system.resources.mine()", icp::resourcesMine);
 
-
+        commandlookup.put("clear()", icp::clear);
 
         
     }
@@ -57,6 +64,7 @@ public class CommandProcessor {
         }
         else {
             System.out.println("command not found!");
+            myTerminalHandler.addToTerminal("command not found!");
         }
 
     }
@@ -67,66 +75,70 @@ public class CommandProcessor {
     public class InnerCommandProcessor {
 
         void ventilationClose() {
-            System.out.println("ventilation closed!");
+            System.out.println("Ventilation system closed to prevent oxygen loss!");
         }
-        
-        void ventilationDiagnostics() {
 
+        void ventilationDiagnostics() {
+            System.out.println("Diagnosing ventilation system... Possible issues: clogged pipes, empty oxygen tank, or leak.");
         }
 
         void ventilationPump() {
-
+            System.out.println("Applying pressure to clear blockages in the ventilation pipes!");
         }
-        
-        void ventilationRefill() {
 
+        void ventilationRefill() {
+            System.out.println("Refilling oxygen tank to restore the supply!");
         }
 
         void ventilationWeld() {
-
+            System.out.println("Welding the ventilation pipes to fix the leak!");
         }
 
         void ventilationOpen() {
-
+            System.out.println("Ventilation system reopened, restoring airflow and oxygen to the ship.");
         }
 
         void engineDiagnostics() {
-
+            System.out.println("Checking fuel level... displaying percentage (0%-100%).");
         }
 
         void engineStop() {
-
+            System.out.println("Engine stopped. Safe to refuel.");
         }
 
         void engineRefuel() {
-
+            System.out.println("Refueling the engine... Make sure not to overfuel.");
         }
 
         void engineStart() {
-
+            System.out.println("Engine restarted. Ready for operation.");
         }
 
-
         void coolantRead() {
-
+            System.out.println("Reading coolant system temperature...");
         }
 
         void coolantRegulator() {
-
+            System.out.println("Regulating coolant and heat pipes to balance the temperature...");
         }
 
         void coolantSet() {
-
+            System.out.println("Setting coolant and heat flow percentages to stabilize the system.");
         }
 
         void resourcesScan() {
-
+            System.out.println("Scanning for ore deposits... Depth value detected.");
         }
 
         void resourcesMine() {
+            System.out.println("Mining ore... Ensure you are within the correct depth range.");
 
         }
 
-    }
+        void clear() {
+            myTerminalHandler.clear();
+        }
 
+    }
 }
+
