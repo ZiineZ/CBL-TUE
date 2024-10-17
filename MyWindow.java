@@ -9,7 +9,10 @@ public class MyWindow extends JFrame {
     final JPanel terminalgui = new JPanel();
     final JPanel scoregui = new JPanel();
 
+    private ScoreHandler scoreHandler;
+
     MyWindow(){
+
         this.setTitle("TTC-300");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -22,6 +25,7 @@ public class MyWindow extends JFrame {
     }
 
     void initPanels(JFrame frame){
+        
         frame.setLayout(new BorderLayout(5, 5));
 
         JPanel leftPanel = new JPanel(new GridLayout(2, 1, 5, 5));
@@ -39,12 +43,24 @@ public class MyWindow extends JFrame {
         frame.add(leftPanel, BorderLayout.CENTER);
         frame.add(scoregui, BorderLayout.EAST);
 
+        scoreHandler = new ScoreHandler(scoregui);
+
         addHandlers();
     }
 
     void addHandlers() {
+
         terminalgui.add(new terminalHandler(terminalgui));
-        scoregui.add(new ScoreHandler(scoregui));
+        new ScoreHandler(scoregui);
+
+        JButton fixOxygenButton = new JButton("Fix Oxygen Pipe");
+        fixOxygenButton.addActionListener(e -> fixOxygenPipe());
+        terminalgui.add(fixOxygenButton);
+    }
+
+    void fixOxygenPipe() {
+        System.out.println("Oxygen pipe fixed!");
+        scoreHandler.scoreCount(100);
     }
     
 }
