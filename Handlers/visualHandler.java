@@ -18,7 +18,7 @@ public class visualHandler extends JPanel {
        private void loadImage() {
         try {
             // Using ImageIO to load the image
-            image = ImageIO.read(new File("../Assets/controlroomimage.jpeg"));
+            image = ImageIO.read(new File("Assets/controlroomimage.jpeg"));
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception appropriately
         }
@@ -28,7 +28,7 @@ public class visualHandler extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Call the superclass's method
         if (image != null) {
-            g.drawImage(image, 0, 0, this); // Draw the image at (0, 0)
+            g.drawImage(image, 0, 0, getWidth(), getHeight(), this); // Draw the image at (0, 0)
         }
     }
 
