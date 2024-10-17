@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.*;
 
+import Handlers.ScoreHandler;
 import Handlers.terminalHandler;
 
 public class CommandProcessor {
@@ -41,6 +42,8 @@ public class CommandProcessor {
         commandlookup.put("system.resources.mine()", icp::resourcesMine);
 
         commandlookup.put("clear()", icp::clear);
+
+        commandlookup.put("addscore()", icp::addscore);
 
         
     }
@@ -137,6 +140,10 @@ public class CommandProcessor {
 
         void clear() {
             myTerminalHandler.clear();
+        }
+
+        void addscore() {
+            ScoreHandler.scoreCount(100);
         }
 
     }

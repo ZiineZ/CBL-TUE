@@ -9,8 +9,6 @@ public class MyWindow extends JFrame {
     final JPanel terminalgui = new JPanel();
     final JPanel scoregui = new JPanel();
 
-    private ScoreHandler scoreHandler;
-
     MyWindow(){
 
         this.setTitle("TTC-300");
@@ -43,30 +41,15 @@ public class MyWindow extends JFrame {
         frame.add(leftPanel, BorderLayout.CENTER);
         frame.add(scoregui, BorderLayout.EAST);
 
-        scoreHandler = new ScoreHandler(scoregui);
-
         addHandlers();
     }
 
     void addHandlers() {
 
         terminalgui.add(new terminalHandler(terminalgui));
-<<<<<<< HEAD
-        ScoreHandler scorehandler = new ScoreHandler();
-        scorehandler.scoreHandler(scoregui);
-        visualgui.add(new visualHandler());
-=======
         new ScoreHandler(scoregui);
+        visualgui.add(new visualHandler());
 
-        JButton fixOxygenButton = new JButton("Fix Oxygen Pipe");
-        fixOxygenButton.addActionListener(e -> fixOxygenPipe());
-        terminalgui.add(fixOxygenButton);
-    }
-
-    void fixOxygenPipe() {
-        System.out.println("Oxygen pipe fixed!");
-        scoreHandler.scoreCount(100);
->>>>>>> Valerjs
     }
     
 }

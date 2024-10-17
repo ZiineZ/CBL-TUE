@@ -1,15 +1,5 @@
 package Handlers;
 
-<<<<<<< HEAD
-import javax.swing.*;
-
-public class ScoreHandler {
-    
-    public void scoreHandler (JPanel parentPanel) {
-        JLabel f = new JLabel("Label Example");
-        f.setVisible(true);
-        parentPanel.add(f);
-=======
 import java.awt.Font;
 
 import javax.swing.*;
@@ -19,8 +9,8 @@ import javax.swing.*;
  */
 public class ScoreHandler {
     
-    private int score;
-    private JLabel scoreLabel;
+    private static int score;
+    private static JLabel scoreLabel;
 
     public ScoreHandler(JPanel parentPanel) {
 
@@ -61,17 +51,14 @@ public class ScoreHandler {
         ore.setVisible(true);
         ore.setBounds(100, 250, 100, 30);
         parentPanel.add(ore);
-
-        
->>>>>>> Valerjs
     }
 
-    public void scoreCount(int points) {
+    public static void scoreCount(int points) {
         score += points;
         updateScoreLabel(); 
     }
 
-    private void updateScoreLabel() {
+    private static void updateScoreLabel() {
         scoreLabel.setText("" + score);
     }
 
