@@ -1,39 +1,44 @@
 package Handlers;
 
-import java.awt.Canvas;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.awt.*;
+import java.io.*;
+import javax.swing.*;
 
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 public class visualHandler extends JPanel {
-    
-    private Image image;
 
-       private void loadImage() {
-        try {
-            // Using ImageIO to load the image
-            image = ImageIO.read(new File("Assets/controlroomimage.jpeg"));
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception appropriately
-        }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // Call the superclass's method
-        if (image != null) {
-            g.drawImage(image, 0, 0, getWidth(), getHeight(), this); // Draw the image at (0, 0)
-        }
-    }
+    JPanel temperaturePanel = new JPanel();
+    JPanel ventilationPanel = new JPanel();
+    JPanel fuelPanel = new JPanel();
+    JPanel orePanel = new JPanel();
 
     public visualHandler() {
-        loadImage();
+
+        this.setLayout(new GridLayout(2, 2));
+        this.setVisible(true);
+
+        temperaturePanel.setBackground(Color.GRAY);
+        ventilationPanel.setBackground(Color.DARK_GRAY);
+        fuelPanel.setBackground(Color.DARK_GRAY);
+        orePanel.setBackground(Color.GRAY);
+
+        temperaturePanel.setVisible(true);
+        ventilationPanel.setVisible(true);
+        fuelPanel.setVisible(true);
+        orePanel.setVisible(true);
+
+
+        this.add(temperaturePanel);
+        this.add(ventilationPanel);
+        this.add(fuelPanel);
+        this.add(orePanel);
+
+        addImageIcons();
+
+    }
+
+    void addImageIcons() {
+
     }
 
 }

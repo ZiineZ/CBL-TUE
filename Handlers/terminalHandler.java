@@ -10,11 +10,11 @@ import java.awt.event.*;
 public class terminalHandler extends JTextArea {
 
     private int immutableLength = 2;
-    private String lastCommand = "";
-
+    
     public terminalHandler(JPanel parentPanel) {
         this.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
-        this.setBackground(Color.GREEN);
+        this.setBackground(new Color(34, 34, 34));
+        this.setForeground(Color.WHITE);
         this.setOpaque(true);
         this.setText("> ");
         this.setCaretPosition(immutableLength);
@@ -54,8 +54,6 @@ public class terminalHandler extends JTextArea {
 
         String fulltext = this.getText();
         String currentCommand = fulltext.substring(immutableLength).trim();
-
-        lastCommand = currentCommand;
 
         executeCommand(currentCommand);
 

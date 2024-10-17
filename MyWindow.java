@@ -4,8 +4,7 @@ import java.awt.*;
 
 
 public class MyWindow extends JFrame {
-
-    final JPanel visualgui = new JPanel();
+;
     final JPanel terminalgui = new JPanel();
     final JPanel scoregui = new JPanel();
 
@@ -28,8 +27,9 @@ public class MyWindow extends JFrame {
 
         JPanel leftPanel = new JPanel(new GridLayout(2, 1, 5, 5));
 
-        visualgui.setBackground(Color.RED);
-        terminalgui.setBackground(Color.GREEN);
+        visualHandler visualgui = new visualHandler();
+        //visualgui.setLayout(null);
+
         scoregui.setBackground(Color.BLUE);
 
         leftPanel.add(visualgui);
@@ -48,7 +48,6 @@ public class MyWindow extends JFrame {
 
         terminalgui.add(new terminalHandler(terminalgui));
         new ScoreHandler(scoregui);
-        visualgui.add(new visualHandler());
 
     }
     
