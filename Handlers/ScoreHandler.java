@@ -1,5 +1,6 @@
 package Handlers;
 
+<<<<<<< HEAD
 import javax.swing.*;
 
 public class ScoreHandler {
