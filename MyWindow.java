@@ -28,7 +28,6 @@ public class MyWindow extends JFrame {
         JPanel leftPanel = new JPanel(new GridLayout(2, 1, 5, 5));
 
         visualHandler visualgui = new visualHandler();
-        //visualgui.setLayout(null);
 
         scoregui.setBackground(Color.BLUE);
 
