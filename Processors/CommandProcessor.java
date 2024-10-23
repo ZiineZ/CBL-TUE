@@ -87,14 +87,17 @@ public class CommandProcessor {
 
         void ventilationPump() {
             System.out.println("Applying pressure to clear blockages in the ventilation pipes!");
+            ScoreHandler.scoreCount(100);
         }
 
         void ventilationRefill() {
             System.out.println("Refilling oxygen tank to restore the supply!");
+            ScoreHandler.scoreCount(100);
         }
 
         void ventilationWeld() {
             System.out.println("Welding the ventilation pipes to fix the leak!");
+            ScoreHandler.scoreCount(100);
         }
 
         void ventilationOpen() {
@@ -111,6 +114,7 @@ public class CommandProcessor {
 
         void engineRefuel() {
             System.out.println("Refueling the engine... Make sure not to overfuel.");
+            ScoreHandler.scoreCount(200);
         }
 
         void engineStart() {
@@ -127,15 +131,17 @@ public class CommandProcessor {
 
         void coolantSet() {
             System.out.println("Setting coolant and heat flow percentages to stabilize the system.");
+            ScoreHandler.scoreCount(100);
         }
 
         void resourcesScan() {
             System.out.println("Scanning for ore deposits... Depth value detected.");
+            ScoreHandler.searchForOre();
         }
 
         void resourcesMine() {
             System.out.println("Mining ore... Ensure you are within the correct depth range.");
-
+            ScoreHandler.mineOre();
         }
 
         void clear() {

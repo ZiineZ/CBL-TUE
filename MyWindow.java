@@ -9,6 +9,7 @@ public class MyWindow extends JFrame {
     final JPanel terminalgui = new JPanel();
     final JPanel scoregui = new JPanel();
 
+
     MyWindow(){
 
         this.setTitle("TTC-300");
@@ -41,6 +42,7 @@ public class MyWindow extends JFrame {
         frame.add(leftPanel, BorderLayout.CENTER);
         frame.add(scoregui, BorderLayout.EAST);
 
+
         addHandlers();
     }
 
@@ -48,8 +50,7 @@ public class MyWindow extends JFrame {
 
         terminalgui.add(new terminalHandler(terminalgui));
         new ScoreHandler(scoregui);
-        visualgui.add(new visualHandler());
-
     }
+
     
 }
