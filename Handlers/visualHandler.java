@@ -15,6 +15,11 @@ public class visualHandler extends JPanel {
     ImageIcon fuel = new ImageIcon("Assets/gasmeter.png");
     ImageIcon ore = new ImageIcon("Assets/oremeter.png");
 
+    ImageIcon templamp = new ImageIcon("Assets/lightbulboff.png");
+    ImageIcon ventlamp = new ImageIcon("Assets/lightbulboff.png");
+    ImageIcon fuellamp = new ImageIcon("Assets/lightbulboff.png");
+    ImageIcon orelamp = new ImageIcon("Assets/lightbulboff.png");
+
     public visualHandler() {
 
         this.setLayout(new GridLayout(2, 2));
@@ -39,6 +44,11 @@ public class visualHandler extends JPanel {
         JLabel fuelicon = new JLabel();
         JLabel oreicon = new JLabel();
 
+        JLabel templampicon = new JLabel();
+        JLabel ventlampicon = new JLabel();
+        JLabel fuellampicon = new JLabel();
+        JLabel orelampicon = new JLabel();
+
         temperaturePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         ventilationPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         fuelPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -49,10 +59,22 @@ public class visualHandler extends JPanel {
         fuelPanel.add(fuelicon);
         orePanel.add(oreicon);
 
+        temperaturePanel.add(templampicon);
+        ventilationPanel.add(ventlampicon);
+        fuelPanel.add(fuellampicon);
+        orePanel.add(orelampicon);
+
+
+
         resizeAndSetIcon(tempicon, temp, temperaturePanel);
         resizeAndSetIcon(venticon, vent, ventilationPanel);
         resizeAndSetIcon(fuelicon, fuel, fuelPanel);
         resizeAndSetIcon(oreicon, ore, orePanel);
+
+        resizeAndSetIcon(templampicon, templamp, temperaturePanel);
+        resizeAndSetIcon(ventlampicon, ventlamp, ventilationPanel);
+        resizeAndSetIcon(fuellampicon, fuellamp, fuelPanel);
+        resizeAndSetIcon(orelampicon, orelamp, orePanel);
     }
 
     private void resizeAndSetIcon(JLabel label, ImageIcon icon, JPanel panel) {
