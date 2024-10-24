@@ -11,7 +11,6 @@ import javax.swing.Timer;
 
 public class ScoreHandler {
 
-    //private static int [] depthWithOre = {500, 600, 700, 800, 900, 1000};
 
     private static int oreLocation = -1;
     private static boolean oreFound = false;
@@ -164,7 +163,7 @@ public class ScoreHandler {
         Timer oxygenTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                percentage= percentage - 1;
+                percentage= percentage - 10;
                 updateOxygenLabel();
             }
         });
@@ -196,14 +195,17 @@ public class ScoreHandler {
     private static void updateTimeLabel() {
         int minutes = TimeInSeconds / 60;
         int seconds = TimeInSeconds % 60;
-        String Time = String.format("%02d:%02d", minutes, seconds);
-        timeLabel.setText(Time);
+        String timeDisplay = String.format("%02d:%02d", minutes, seconds);
+        timeLabel.setText(timeDisplay);
     }
 
     // Oxygen
     private static void updateOxygenLabel() {
-        String Oxygen = String.format("(%02d%%)", percentage);
-        oxygenLabel.setText(Oxygen);
+        String oxygenDisplay = String.format("(%02d%%)", percentage);
+        oxygenLabel.setText(oxygenDisplay);
+        if (percentage == 0) {
+            oxygenDisplay = String.format("(0%)");
+        }
         
     }
 
@@ -218,37 +220,24 @@ public class ScoreHandler {
     }
 
     private static void generateOre() {
-        int randomDepth = (random.nextInt(10) + 1) * 100;
+        int randomDepth = (random.nextInt(10) + 8) * 100;
         oreLocation = randomDepth + depth;
         oreFound = true;
     }
 
     public static void searchForOre() {
         generateOre();
+        System.out.println("Ore located in depth: " + oreLocation);
     }
 
     public static void mineOre() {
-        if (oreFound && (depth >= oreLocation -500 && depth <= oreLocation)) {
+        if (oreFound == true && (oreLocation - depth <= 500 && depth <= oreLocation)) {
             oreCount(1);
             scoreCount(500);
             oreFound = false;
         } else {
-            System.out.println("Nothing1");
+            System.out.println("Nothing FOUND!");
         }
     }
-    // public static void searchForOre() {
-    //     generateOre();
-    //     System.out.println(oreLocation);
-    // }
-
-    // public static void mineOre() {
-    //     generateOre();
-    //     if (oreLocation - depth <= 500) {
-    //         oreCount(1);
-    //         scoreCount(500);
-    //     } else {
-    //         System.out.println("Nothing!");
-    //     }
-    // }
 
 }
