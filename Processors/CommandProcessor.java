@@ -46,6 +46,7 @@ public class CommandProcessor {
         commandlookup.put("addscore()", icp::addscore);
 
         commandlookup.put("start()", icp::start);
+        commandlookup.put("stop()", icp::stop);
 
         
     }
@@ -151,6 +152,10 @@ public class CommandProcessor {
         void start() {
             System.out.println("Start!");
             ActionProcessor.startActions();
+        }
+
+        void stop() {
+            ActionProcessor.stopActions();
         }
 
     }

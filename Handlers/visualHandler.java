@@ -5,19 +5,29 @@ import javax.swing.*;
 
 public class visualHandler extends JPanel {
 
-    JPanel temperaturePanel = new JPanel();
-    JPanel ventilationPanel = new JPanel();
-    JPanel fuelPanel = new JPanel();
+    static JPanel temperaturePanel = new JPanel();
+    static JPanel ventilationPanel = new JPanel();
+    static JPanel fuelPanel = new JPanel();
     JPanel orePanel = new JPanel();
+
+    JLabel tempicon = new JLabel();
+    JLabel venticon = new JLabel();
+    JLabel fuelicon = new JLabel();
+    JLabel oreicon = new JLabel();
+
+    static JLabel templampicon = new JLabel();
+    static JLabel ventlampicon = new JLabel();
+    static JLabel fuellampicon = new JLabel();
+    JLabel orelampicon = new JLabel();
 
     ImageIcon temp = new ImageIcon("Assets/temperaturemeter.png");
     ImageIcon vent = new ImageIcon("Assets/ventilationmeter.png");
     ImageIcon fuel = new ImageIcon("Assets/gasmeter.png");
     ImageIcon ore = new ImageIcon("Assets/oremeter.png");
 
-    ImageIcon templamp = new ImageIcon("Assets/lightbulboff.png");
-    ImageIcon ventlamp = new ImageIcon("Assets/lightbulboff.png");
-    ImageIcon fuellamp = new ImageIcon("Assets/lightbulboff.png");
+    static ImageIcon templamp = new ImageIcon("Assets/lightbulboff.png");
+    static ImageIcon ventlamp = new ImageIcon("Assets/lightbulboff.png");
+    static ImageIcon fuellamp = new ImageIcon("Assets/lightbulboff.png");
     ImageIcon orelamp = new ImageIcon("Assets/lightbulboff.png");
 
     public visualHandler() {
@@ -38,16 +48,6 @@ public class visualHandler extends JPanel {
     }
 
     void addImageIcons() {
-        
-        JLabel tempicon = new JLabel();
-        JLabel venticon = new JLabel();
-        JLabel fuelicon = new JLabel();
-        JLabel oreicon = new JLabel();
-
-        JLabel templampicon = new JLabel();
-        JLabel ventlampicon = new JLabel();
-        JLabel fuellampicon = new JLabel();
-        JLabel orelampicon = new JLabel();
 
         temperaturePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         ventilationPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -77,7 +77,7 @@ public class visualHandler extends JPanel {
         resizeAndSetIcon(orelampicon, orelamp, orePanel);
     }
 
-    private void resizeAndSetIcon(JLabel label, ImageIcon icon, JPanel panel) {
+    private static void resizeAndSetIcon(JLabel label, ImageIcon icon, JPanel panel) {
 
         int panelHeight = panel.getHeight();
         int panelWidth = panel.getWidth();
@@ -100,7 +100,7 @@ public class visualHandler extends JPanel {
         }
     }
 
-    private ImageIcon resizedIcon(ImageIcon icon, int height) {
+    private static ImageIcon resizedIcon(ImageIcon icon, int height) {
         Image image = icon.getImage();
         int originalWidth = image.getWidth(null);
         int originalHeight = image.getHeight(null);
@@ -108,5 +108,42 @@ public class visualHandler extends JPanel {
 
         Image resizedImage = image.getScaledInstance(newWidth, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
+    }
+
+    public static void changeLight(boolean state, int action) {
+        if (state){
+
+            switch(action) {
+                case 0:
+                    templamp = new ImageIcon("Assets/lightbulb.png");
+                     resizeAndSetIcon(templampicon, templamp, temperaturePanel);
+                break;
+                case 1:
+                    ventlamp = new ImageIcon("Assets/lightbulb.png");
+                     resizeAndSetIcon(ventlampicon, templamp, ventilationPanel);
+                break;
+                case 2:
+                    fuellamp = new ImageIcon("Assets/lightbulb.png");
+                     resizeAndSetIcon(fuellampicon, templamp, fuelPanel);
+                break;
+            }
+            
+        } else {
+
+            switch(action) {
+                case 0:
+                    templamp = new ImageIcon("Assets/lightbulboff.png");
+                     resizeAndSetIcon(templampicon, templamp, temperaturePanel);
+                break;
+                case 1:
+                    ventlamp = new ImageIcon("Assets/lightbulboff.png");
+                     resizeAndSetIcon(ventlampicon, templamp, ventilationPanel);
+                break;
+                case 2:
+                    fuellamp = new ImageIcon("Assets/lightbulboff.png");
+                     resizeAndSetIcon(fuellampicon, templamp, fuelPanel);
+                break;
+            }
+        }
     }
 }
