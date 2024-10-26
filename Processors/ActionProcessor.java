@@ -3,6 +3,9 @@ package Processors;
 import javax.swing.*;
 
 import Handlers.visualHandler;
+import Processors.CommandProcessor.CoolantState;
+import Processors.CommandProcessor.EngineState;
+import Processors.CommandProcessor.VentilationState;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,29 +14,29 @@ import java.util.Random;
 
 public class ActionProcessor {
 
+    public static Boolean ventilationProblem = false;
+    public static Boolean coolantProblem = false;
+    public static Boolean engineProblem = false;
+
     static long prevtime = System.currentTimeMillis();
     static long deltaTime = 0;
     static float totalTime = 0;
-
     static float updateCount = 5;
-    
     static Random random;
 
     private static Timer timer;
 
+    private static CommandProcessor myCommandProcessor;
+
     static {
         random = new Random(System.currentTimeMillis());
-        timer = new Timer(68, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                update(); // Update method must also be static
-            }
-        });
+        timer = new Timer(68, e -> update());
     }
 
 
-    public static void startActions() {
+    public static void startActions(CommandProcessor myCommandProcessorPassed) {
         timer.start();
+        myCommandProcessor = myCommandProcessorPassed;
     }
 
     public static void stopActions() {
@@ -43,21 +46,29 @@ public class ActionProcessor {
 
     
     public static void ventilationAction() {
+        ventilationProblem = true;
         System.out.println("there is a problem with the ships ventilation");
-        visualHandler.changeLight(true, 0);
+        visualHandler.changeLight(true, 1);
+        myCommandProcessor.ventilationState = VentilationState.NONE;
 
 
 
     }
 
     public static void temperatureAction() {
+        coolantProblem = true;
+        myCommandProcessor.temperature = new Random().nextInt(61) - 10;
         System.out.println("there is a problem with the ships temperature");
-        visualHandler.changeLight(true, 1);
+        visualHandler.changeLight(true, 0);
+        myCommandProcessor.coolantState = CoolantState.NONE;
     }
 
     public static void fuelAction() {
+        engineProblem = true;
+        myCommandProcessor.EnginePercentage = new Random().nextInt(100) + 1;
         System.out.println("there is a problem with the ships fuel");
         visualHandler.changeLight(true, 2);
+        myCommandProcessor.engineState = EngineState.NONE;
 
     }
 
@@ -98,24 +109,44 @@ public class ActionProcessor {
             float randomFloat = random.nextFloat() * 10000;
 
             if (totalTime > randomFloat){
-                int randomInt = random.nextInt(3);
-
-                switch(randomInt) {
-                    case 0:
-                        temperatureAction();
-                    break;
-                    case 1:
-                        ventilationAction();
-                    break;
-                    case 2:
-                        fuelAction();
-                    break;
-                }
+                executeAction();
             }
         } else{
             updateCount++;
         }
 
+    }
+
+    private static void executeAction() {
+        int randomInt = random.nextInt(3);
+
+        if (coolantProblem && ventilationProblem && engineProblem) {
+            //TODO TRIGGER GAME END!
+        }
+                    
+        switch(randomInt) {
+            case 0:
+                if (!coolantProblem) {
+                    temperatureAction();
+                } else {
+                    executeAction();
+                }
+            break;
+            case 1:
+                if (!ventilationProblem) {
+                    ventilationAction();
+                } else {
+                    executeAction();
+                }
+            break;
+            case 2:
+                if (!engineProblem) {
+                    fuelAction();
+                } else {
+                    executeAction();
+                }
+            break;
+        }
     }
 }
     

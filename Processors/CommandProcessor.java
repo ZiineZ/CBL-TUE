@@ -1,19 +1,49 @@
 package Processors;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Random;
 import java.util.regex.*;
-
 import Handlers.ScoreHandler;
 import Handlers.terminalHandler;
+import Handlers.visualHandler;
+
+
 
 public class CommandProcessor {
 
-    terminalHandler myTerminalHandler;
+    CommandProcessor myCommandProcessor = this;
 
+    public enum VentilationState {
+        NONE, CLOSED, DIAGNOSTICS_RUN, CLOGGED, EMPTY_TANK, LEAK, FIXED
+    }
+
+    public enum EngineState {
+        NONE, DIAGNOSTICS_RUN, STOPPED, REFUELED, FIXED
+    }
+
+    public enum CoolantState {
+        NONE, TEMPERATURE_CHECKED, REGULATED, SET, FIXED
+    }
+
+    public enum ResourceState {
+        NONE, SCANNED, MINED
+    }
+
+    terminalHandler myTerminalHandler;
     private Map<String, Runnable> commandlookup;
+
+    public VentilationState ventilationState = VentilationState.NONE;
+    public EngineState engineState = EngineState.NONE;
+    public CoolantState coolantState = CoolantState.NONE;
+    public ResourceState resourceState = ResourceState.NONE;
+
+    public int EnginePercentage = 0;
+    public int temperature = 0;
+    public int coolantregulatornumber = 0;
+    public int coolantamount;
+    public int heatingamount;
+    String arguments = "";
 
     public CommandProcessor(terminalHandler terminal){
 
@@ -56,13 +86,19 @@ public class CommandProcessor {
         //TODO save additional arguments given in brackets to a temporary variable and remove them from the expression.
         Pattern pattern = Pattern.compile("\\((.*?)\\)");
         Matcher matcher = pattern.matcher(lowercaseCommand);
-        String arguments;
+        String finalcommand = "";
+        
 
         if(matcher.find()) {
             arguments = matcher.group(1);
         }
 
-        String finalcommand = lowercaseCommand.replaceAll("\\(.*?\\)", "()");
+        if (arguments == "ventilation" || arguments == "fuel"){
+            finalcommand = lowercaseCommand;
+        } else {
+            finalcommand = lowercaseCommand.replaceAll("\\(.*?\\)", "()");
+        }
+
         Runnable function = commandlookup.get(finalcommand);
         
         if (function != null){
@@ -80,61 +116,193 @@ public class CommandProcessor {
      */
     public class InnerCommandProcessor {
 
+        //TODO:
+        //Make a command where the user can see what condition certain systems are in!
+
         void ventilationClose() {
-            System.out.println("Ventilation system closed to prevent oxygen loss!");
+            if (ventilationState == VentilationState.NONE) {
+
+                ventilationState = VentilationState.CLOSED;
+                myTerminalHandler.addToTerminal("Ventilation system closed. Oxygen loss imminent.");
+
+            } else {
+                myTerminalHandler.addToTerminal("Cannot close ventilation systems in current state.");
+            }
         }
 
         void ventilationDiagnostics() {
-            System.out.println("Diagnosing ventilation system... Possible issues: clogged pipes, empty oxygen tank, or leak.");
+            
+            if (ventilationState == VentilationState.CLOSED) {
+
+                String issueText = "";
+
+                ventilationState = VentilationState.DIAGNOSTICS_RUN;
+                int issue = new Random().nextInt(3);
+                switch (issue) {
+                    case 0 -> {ventilationState = VentilationState.CLOGGED; issueText = "clogged pipes.";}
+                    case 1 -> {ventilationState = VentilationState.EMPTY_TANK; issueText = "empty oxygen tank."; }
+                    case 2 -> {ventilationState = VentilationState.LEAK; issueText = "leak in pipe.";}
+                }
+
+                myTerminalHandler.addToTerminal("Diagnostics completed. Identified issue: " + issueText);
+
+            } else {
+                myTerminalHandler.addToTerminal("Cannot run diagnostics in current state.");
+            }
         }
 
         void ventilationPump() {
-            System.out.println("Applying pressure to clear blockages in the ventilation pipes!");
-            ScoreHandler.scoreCount(100);
+            if (ventilationState == VentilationState.CLOGGED) {
+                ventilationState = VentilationState.FIXED;
+                myTerminalHandler.addToTerminal("Ventilation clog cleared.");
+            } else {
+                myTerminalHandler.addToTerminal("No clog to pump.");
+            }
         }
 
         void ventilationRefill() {
-            System.out.println("Refilling oxygen tank to restore the supply!");
-            ScoreHandler.scoreCount(100);
+            if (ventilationState == VentilationState.EMPTY_TANK) {
+                ventilationState = VentilationState.FIXED;
+                myTerminalHandler.addToTerminal("Oxygen tank refilled.");
+            } else {
+                myTerminalHandler.addToTerminal("No empty tank to refill.");
+            }
         }
 
         void ventilationWeld() {
-            System.out.println("Welding the ventilation pipes to fix the leak!");
-            ScoreHandler.scoreCount(100);
+            if (ventilationState == VentilationState.LEAK) {
+                ventilationState = VentilationState.FIXED;
+                myTerminalHandler.addToTerminal("Leak welded.");
+            } else {
+                myTerminalHandler.addToTerminal("No leak to weld.");
+            }
         }
 
         void ventilationOpen() {
-            System.out.println("Ventilation system reopened, restoring airflow and oxygen to the ship.");
+            if (ventilationState == VentilationState.FIXED) {
+                ventilationState = VentilationState.NONE;
+                ActionProcessor.ventilationProblem = false;
+                visualHandler.changeLight(false, 1);
+                myTerminalHandler.addToTerminal("Ventilation system reopened.");
+            } else {
+                myTerminalHandler.addToTerminal("Cannot open ventilation system in current state.");
+            }
         }
 
         void engineDiagnostics() {
-            System.out.println("Checking fuel level... displaying percentage (0%-100%).");
+            if (engineState == EngineState.NONE) {
+                engineState = EngineState.DIAGNOSTICS_RUN;
+                
+                myTerminalHandler.addToTerminal("Engine fuel level: " + EnginePercentage + "%");
+            } else {
+                myTerminalHandler.addToTerminal("Cannt run diagnostics on the engine in current state.");
+            }
         }
 
         void engineStop() {
-            System.out.println("Engine stopped. Safe to refuel.");
+            if (engineState == EngineState.DIAGNOSTICS_RUN) {
+                engineState = EngineState.STOPPED;
+                myTerminalHandler.addToTerminal("Engine stopped.");
+                // TODO stop going down...
+            } else {
+                myTerminalHandler.addToTerminal("Cannot stop engine in current state.");
+            }
         }
 
         void engineRefuel() {
-            System.out.println("Refueling the engine... Make sure not to overfuel.");
-            ScoreHandler.scoreCount(200);
+            if (engineState == EngineState.STOPPED) {
+                int userEnginePercentage = 100;
+                try {
+                    userEnginePercentage = Integer.parseInt(arguments);
+
+                }
+                catch (NumberFormatException e){
+                    myTerminalHandler.addToTerminal("No refuel percentage given.");
+                }
+
+                if (userEnginePercentage == EnginePercentage) {
+                    engineState = EngineState.REFUELED;
+                    myTerminalHandler.addToTerminal("Engine succesfully refueled.");
+                } else {
+                    myTerminalHandler.addToTerminal("Engine not properly refueled. Critical engine malfunction.");
+                }
+
+            } else {
+                myTerminalHandler.addToTerminal("Cannot refuel engine in current state.");
+            }
         }
 
         void engineStart() {
-            System.out.println("Engine restarted. Ready for operation.");
+            if (engineState == EngineState.REFUELED) {
+                engineState = EngineState.NONE;
+                ActionProcessor.engineProblem = false;
+                visualHandler.changeLight(false, 2);
+                myTerminalHandler.addToTerminal("Engine started succesfully");
+            } else {
+                myTerminalHandler.addToTerminal("Cannot start engine in current state");
+            }
         }
 
         void coolantRead() {
-            System.out.println("Reading coolant system temperature...");
+            if (coolantState == CoolantState.NONE) {
+                coolantState = CoolantState.TEMPERATURE_CHECKED;
+                myTerminalHandler.addToTerminal("The temperature is: " + temperature + "°C");
+            } else {
+                myTerminalHandler.addToTerminal("Unable to read the temperature in the current state.");
+            }
         }
 
         void coolantRegulator() {
-            System.out.println("Regulating coolant and heat pipes to balance the temperature...");
+            if (coolantState == CoolantState.TEMPERATURE_CHECKED) {
+                int userTemperature = 0;
+
+                try {
+                    userTemperature = Integer.parseInt(arguments);
+
+                } catch (NumberFormatException e) {
+                    myTerminalHandler.addToTerminal("No temperature is properly inputted.");
+                    return;
+                }
+                
+                coolantState = CoolantState.REGULATED;
+
+               coolantregulatornumber = (6 * 6 * 6 * (userTemperature + 10)) ^ (6 * 6 * (userTemperature + 10)) ^ (6 * (coolantregulatornumber + 10));
+               coolantamount = (int)(coolantregulatornumber / 100);
+               heatingamount = (int)(coolantregulatornumber % 100);
+
+               myTerminalHandler.addToTerminal("The following numbers regulate the temperature:\nCoolant: " + coolantamount + ". Heating: " + heatingamount + ".");
+            } else {
+                myTerminalHandler.addToTerminal("Cannot cannot get regulated numbers in the current state.");
+            }
         }
 
         void coolantSet() {
-            System.out.println("Setting coolant and heat flow percentages to stabilize the system.");
-            ScoreHandler.scoreCount(100);
+            if (coolantState == CoolantState.REGULATED) {
+                int userCoolantAmount = 0;
+                int userHeatingAmount = 0;
+
+                try {
+                    String[] parts = arguments.split(",\\s*");
+
+                    userCoolantAmount = Integer.parseInt(parts[0]);
+                    userHeatingAmount = Integer.parseInt(parts[1]);
+
+                } catch (NumberFormatException e) {
+                    myTerminalHandler.addToTerminal("The regulator numbers are not properly inputted.");
+                    return;
+                }
+
+                if (userCoolantAmount == coolantamount && userHeatingAmount == heatingamount) {
+                    myTerminalHandler.addToTerminal("Temperature succesfully regulated.");
+                    coolantState = CoolantState.NONE;
+                    ActionProcessor.coolantProblem = false;
+                    visualHandler.changeLight(false, 0);
+                } else {
+                    myTerminalHandler.addToTerminal("Failed to regulate temperature, regulator numbers incorrect.");
+                }
+            } else {
+                myTerminalHandler.addToTerminal("Cannot set coolant flow in current state.");
+            }
         }
 
         void resourcesScan() {
@@ -157,7 +325,7 @@ public class CommandProcessor {
 
         void start() {
             System.out.println("Start!");
-            ActionProcessor.startActions();
+            ActionProcessor.startActions(myCommandProcessor);
         }
 
         void stop() {
