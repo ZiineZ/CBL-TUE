@@ -5,10 +5,38 @@ import javax.swing.*;
 
 public class visualHandler extends JPanel {
 
-    static JPanel temperaturePanel = new JPanel();
-    static JPanel ventilationPanel = new JPanel();
-    static JPanel fuelPanel = new JPanel();
-    JPanel orePanel = new JPanel();
+    static Image metalbackground = new ImageIcon("Assets/metalpanel.png").getImage();
+
+    static JPanel temperaturePanel = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(metalbackground, 0, 0, getWidth(), getHeight(), this);
+        }
+    };
+    static JPanel ventilationPanel = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(metalbackground, 0, 0, getWidth(), getHeight(), this);
+        }
+    };
+    static JPanel fuelPanel = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(metalbackground, 0, 0, getWidth(), getHeight(), this);
+        }
+    };
+    static JPanel orePanel = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(metalbackground, 0, 0, getWidth(), getHeight(), this);
+        }
+    };
+
+    
 
     JLabel tempicon = new JLabel();
     JLabel venticon = new JLabel();
@@ -33,6 +61,12 @@ public class visualHandler extends JPanel {
     public visualHandler() {
 
         this.setLayout(new GridLayout(2, 2));
+        this.setBorder(BorderFactory.createEmptyBorder());
+
+        temperaturePanel.setLayout(new GridBagLayout());
+        ventilationPanel.setLayout(new GridBagLayout());
+        fuelPanel.setLayout(new GridBagLayout());
+        orePanel.setLayout(new GridBagLayout());
 
         temperaturePanel.setBackground(Color.GRAY);
         ventilationPanel.setBackground(Color.DARK_GRAY);
@@ -49,10 +83,15 @@ public class visualHandler extends JPanel {
 
     void addImageIcons() {
 
-        temperaturePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        ventilationPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        fuelPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        orePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        resizeIcons(tempicon, temp, temperaturePanel, 80);
+        resizeIcons(venticon, vent, ventilationPanel, 80);
+        resizeIcons(fuelicon, fuel, fuelPanel, 80);
+        resizeIcons(oreicon, ore, orePanel, 80);
+
+        resizeIcons(templampicon, templamp, temperaturePanel, 120);
+        resizeIcons(ventlampicon, ventlamp, ventilationPanel, 120);
+        resizeIcons(fuellampicon, fuellamp, fuelPanel, 120);
+        resizeIcons(orelampicon, orelamp, orePanel, 120);
 
         temperaturePanel.add(tempicon);
         ventilationPanel.add(venticon);
@@ -63,51 +102,24 @@ public class visualHandler extends JPanel {
         ventilationPanel.add(ventlampicon);
         fuelPanel.add(fuellampicon);
         orePanel.add(orelampicon);
-
-
-
-        resizeAndSetIcon(tempicon, temp, temperaturePanel);
-        resizeAndSetIcon(venticon, vent, ventilationPanel);
-        resizeAndSetIcon(fuelicon, fuel, fuelPanel);
-        resizeAndSetIcon(oreicon, ore, orePanel);
-
-        resizeAndSetIcon(templampicon, templamp, temperaturePanel);
-        resizeAndSetIcon(ventlampicon, ventlamp, ventilationPanel);
-        resizeAndSetIcon(fuellampicon, fuellamp, fuelPanel);
-        resizeAndSetIcon(orelampicon, orelamp, orePanel);
     }
 
-    private static void resizeAndSetIcon(JLabel label, ImageIcon icon, JPanel panel) {
+    private static void resizeIcons(JLabel label,ImageIcon imageIcon, JPanel panel, int height) {
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(height, height, Image.SCALE_SMOOTH);
+        ImageIcon newImageIcon = new ImageIcon(scaledImage);
+        label.setIcon(newImageIcon);
 
-        int panelHeight = panel.getHeight();
-        int panelWidth = panel.getWidth();
-
-        label.setHorizontalAlignment(SwingConstants.LEFT);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setVerticalAlignment(SwingConstants.CENTER);
 
-        if (panelHeight == 0 || panelWidth == 0) {
-            panel.addComponentListener(new java.awt.event.ComponentAdapter() {
-                public void componentResized(java.awt.event.ComponentEvent evt) {
-                    ImageIcon resizedIcon = resizedIcon(icon, panel.getHeight()  - 50);
-                    label.setIcon(resizedIcon);
-                    label.revalidate();
-                    label.repaint();
-                }
-            });
-        } else {
-            ImageIcon resizedIcon = resizedIcon(icon, panelHeight - 50);
-            label.setIcon(resizedIcon);
-        }
-    }
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
 
-    private static ImageIcon resizedIcon(ImageIcon icon, int height) {
-        Image image = icon.getImage();
-        int originalWidth = image.getWidth(null);
-        int originalHeight = image.getHeight(null);
-        int newWidth = (int) ((double) height / originalHeight * originalWidth);
+        panel.add(label, gbc);
 
-        Image resizedImage = image.getScaledInstance(newWidth, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(resizedImage);
     }
 
     public static void changeLight(boolean state, int action) {
@@ -115,19 +127,19 @@ public class visualHandler extends JPanel {
         switch (action) {
             case 0:
                 icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
-                resizeAndSetIcon(templampicon, icon, temperaturePanel);
+                resizeIcons(templampicon, icon, temperaturePanel, 120);
                 temperaturePanel.revalidate();
                 temperaturePanel.repaint();
                 break;
             case 1:
                 icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
-                resizeAndSetIcon(ventlampicon, icon, ventilationPanel);
+                resizeIcons(ventlampicon, icon, ventilationPanel, 120);
                 ventilationPanel.revalidate();
                 ventilationPanel.repaint();
                 break;
             case 2:
                 icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
-                resizeAndSetIcon(fuellampicon, icon, fuelPanel);
+                resizeIcons(fuellampicon, icon, fuelPanel, 120);
                 fuelPanel.revalidate();
                 fuelPanel.repaint();
                 break;

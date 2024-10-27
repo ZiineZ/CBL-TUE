@@ -89,8 +89,9 @@ public class CommandProcessor {
 
         String lowercaseCommand = command.toLowerCase();
         String finalcommand = "";
-
-        arguments = lowercaseCommand.substring(lowercaseCommand.indexOf("(")+1, lowercaseCommand.indexOf(")"));
+        if (lowercaseCommand.contains("(") && lowercaseCommand.contains(")")) {
+            arguments = lowercaseCommand.substring(lowercaseCommand.indexOf("(")+1, lowercaseCommand.indexOf(")"));
+        }
         
         finalcommand = lowercaseCommand.replaceAll("\\(.*?\\)", "()");
 
