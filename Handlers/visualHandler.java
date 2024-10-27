@@ -111,39 +111,27 @@ public class visualHandler extends JPanel {
     }
 
     public static void changeLight(boolean state, int action) {
-        if (state){
-
-            switch(action) {
-                case 0:
-                    templamp = new ImageIcon("Assets/lightbulb.png");
-                     resizeAndSetIcon(templampicon, templamp, temperaturePanel);
+        ImageIcon icon;
+        switch (action) {
+            case 0:
+                icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
+                resizeAndSetIcon(templampicon, icon, temperaturePanel);
+                temperaturePanel.revalidate();
+                temperaturePanel.repaint();
                 break;
-                case 1:
-                    ventlamp = new ImageIcon("Assets/lightbulb.png");
-                     resizeAndSetIcon(ventlampicon, templamp, ventilationPanel);
+            case 1:
+                icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
+                resizeAndSetIcon(ventlampicon, icon, ventilationPanel);
+                ventilationPanel.revalidate();
+                ventilationPanel.repaint();
                 break;
-                case 2:
-                    fuellamp = new ImageIcon("Assets/lightbulb.png");
-                     resizeAndSetIcon(fuellampicon, templamp, fuelPanel);
+            case 2:
+                icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
+                resizeAndSetIcon(fuellampicon, icon, fuelPanel);
+                fuelPanel.revalidate();
+                fuelPanel.repaint();
                 break;
-            }
-            
-        } else {
-
-            switch(action) {
-                case 0:
-                    templamp = new ImageIcon("Assets/lightbulboff.png");
-                     resizeAndSetIcon(templampicon, templamp, temperaturePanel);
-                break;
-                case 1:
-                    ventlamp = new ImageIcon("Assets/lightbulboff.png");
-                     resizeAndSetIcon(ventlampicon, templamp, ventilationPanel);
-                break;
-                case 2:
-                    fuellamp = new ImageIcon("Assets/lightbulboff.png");
-                     resizeAndSetIcon(fuellampicon, templamp, fuelPanel);
-                break;
-            }
         }
     }
+
 }

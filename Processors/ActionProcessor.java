@@ -7,9 +7,6 @@ import Processors.CommandProcessor.CoolantState;
 import Processors.CommandProcessor.EngineState;
 import Processors.CommandProcessor.VentilationState;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class ActionProcessor {
@@ -27,6 +24,7 @@ public class ActionProcessor {
     private static Timer timer;
 
     private static CommandProcessor myCommandProcessor;
+    private static SoundProcessor mySoundProcessor = new SoundProcessor();
 
     static {
         random = new Random(System.currentTimeMillis());
@@ -49,6 +47,7 @@ public class ActionProcessor {
         ventilationProblem = true;
         System.out.println("there is a problem with the ships ventilation");
         visualHandler.changeLight(true, 1);
+        mySoundProcessor.playProblemSound();
         myCommandProcessor.ventilationState = VentilationState.NONE;
 
 
@@ -60,6 +59,7 @@ public class ActionProcessor {
         myCommandProcessor.temperature = new Random().nextInt(61) - 10;
         System.out.println("there is a problem with the ships temperature");
         visualHandler.changeLight(true, 0);
+        mySoundProcessor.playProblemSound();
         myCommandProcessor.coolantState = CoolantState.NONE;
     }
 
@@ -68,6 +68,7 @@ public class ActionProcessor {
         myCommandProcessor.EnginePercentage = new Random().nextInt(100) + 1;
         System.out.println("there is a problem with the ships fuel");
         visualHandler.changeLight(true, 2);
+        mySoundProcessor.playProblemSound();
         myCommandProcessor.engineState = EngineState.NONE;
 
     }

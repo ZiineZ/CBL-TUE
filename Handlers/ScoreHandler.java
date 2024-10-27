@@ -4,10 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import javax.swing.*;
-import javax.swing.Timer;
-
+import java.util.Random;
 
 public class ScoreHandler {
 
@@ -15,8 +13,7 @@ public class ScoreHandler {
     private static int oreLocation = -1;
     private static boolean oreFound = false;
 
-    private static final int depthIncrementRate = 1;
-    private static final int depthUpdateInterval = 1000;
+    private static final int depthUpdateInterval = 10;
     
 
     private static int score;
@@ -30,9 +27,6 @@ public class ScoreHandler {
     private static JLabel timeLabel;
     private static JLabel oreLabel;
     private static JLabel oxygenLabel;
-
-    private static boolean oreAtDepth = false;
-    private static int currentOreDepth = -1;
 
     private static Random random = new Random();
 
@@ -117,9 +111,9 @@ public class ScoreHandler {
         parentPanel.add(oreLabel);
 
 
-        startDepthCounting();
-        startTimeCounting();
-        startOxygenCounting();
+        //startDepthCounting();
+        //startTimeCounting();
+        //startOxygenCounting();
     }
 
     void usingCustomFonts() {
@@ -140,7 +134,7 @@ public class ScoreHandler {
         Timer depthTimer = new Timer(depthUpdateInterval, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                depth += 100;
+                depth += 1;
                 updateDepthLabel();
             }
         });
@@ -160,10 +154,10 @@ public class ScoreHandler {
     }
 
     private void startOxygenCounting() {
-        Timer oxygenTimer = new Timer(1000, new ActionListener() {
+        Timer oxygenTimer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                percentage= percentage - 10;
+                percentage= percentage - 1;
                 updateOxygenLabel();
             }
         });
@@ -201,12 +195,12 @@ public class ScoreHandler {
 
     // Oxygen
     private static void updateOxygenLabel() {
-        String oxygenDisplay = String.format("(%02d%%)", percentage);
+        int roundedPercentage = (int) Math.round(percentage);
+        String oxygenDisplay = String.format("(%d%%)", roundedPercentage);
         oxygenLabel.setText(oxygenDisplay);
-        if (percentage == 0) {
-            oxygenDisplay = String.format("(0%)");
+        if (roundedPercentage <= 0) {
+            oxygenLabel.setText("(0%)"); 
         }
-        
     }
 
     // Ore

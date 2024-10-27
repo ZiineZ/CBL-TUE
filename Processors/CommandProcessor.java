@@ -31,6 +31,8 @@ public class CommandProcessor {
     }
 
     terminalHandler myTerminalHandler;
+    SoundProcessor mySoundProcessor = new SoundProcessor();
+
     private Map<String, Runnable> commandlookup;
 
     public VentilationState ventilationState = VentilationState.NONE;
@@ -45,6 +47,7 @@ public class CommandProcessor {
     public int heatingamount;
     String arguments = "";
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public CommandProcessor(terminalHandler terminal){
 
         myTerminalHandler = terminal;
@@ -94,11 +97,13 @@ public class CommandProcessor {
         }
 
         if (arguments == "ventilation" || arguments == "fuel"){
+            System.out.println(arguments.toString());;
             finalcommand = lowercaseCommand;
         } else {
             finalcommand = lowercaseCommand.replaceAll("\\(.*?\\)", "()");
         }
 
+        System.out.println(finalcommand);
         Runnable function = commandlookup.get(finalcommand);
         
         if (function != null){
@@ -183,6 +188,7 @@ public class CommandProcessor {
                 ventilationState = VentilationState.NONE;
                 ActionProcessor.ventilationProblem = false;
                 visualHandler.changeLight(false, 1);
+                mySoundProcessor.playSolvedSound();
                 myTerminalHandler.addToTerminal("Ventilation system reopened.");
             } else {
                 myTerminalHandler.addToTerminal("Cannot open ventilation system in current state.");
@@ -238,6 +244,7 @@ public class CommandProcessor {
                 ActionProcessor.engineProblem = false;
                 visualHandler.changeLight(false, 2);
                 myTerminalHandler.addToTerminal("Engine started succesfully");
+                mySoundProcessor.playSolvedSound();
             } else {
                 myTerminalHandler.addToTerminal("Cannot start engine in current state");
             }
@@ -293,10 +300,11 @@ public class CommandProcessor {
                 }
 
                 if (userCoolantAmount == coolantamount && userHeatingAmount == heatingamount) {
-                    myTerminalHandler.addToTerminal("Temperature succesfully regulated.");
                     coolantState = CoolantState.NONE;
                     ActionProcessor.coolantProblem = false;
                     visualHandler.changeLight(false, 0);
+                    mySoundProcessor.playSolvedSound();
+                    myTerminalHandler.addToTerminal("Temperature succesfully regulated.");
                 } else {
                     myTerminalHandler.addToTerminal("Failed to regulate temperature, regulator numbers incorrect.");
                 }
