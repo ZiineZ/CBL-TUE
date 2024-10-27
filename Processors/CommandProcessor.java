@@ -157,6 +157,8 @@ public class CommandProcessor {
 
         void start() {
             System.out.println("Start!");
+            ScoreHandler.startTimeCounting();
+            ScoreHandler.startDepthCounting();
             ActionProcessor.startActions();
         }
 
