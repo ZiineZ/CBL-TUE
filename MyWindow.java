@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 
 public class MyWindow extends JFrame {
 
-    final JPanel terminalgui = new JPanel();
+    JScrollPane terminalScrollPane = new JScrollPane();
     final JPanel scoregui = new JPanel() {
         @Override
         protected void paintComponent(Graphics g) {
@@ -35,8 +35,17 @@ public class MyWindow extends JFrame {
         leftPanel.setBackground(new Color(17,17,17));
         visualHandler visualgui = new visualHandler();
 
+        terminalHandler terminalhandler = new terminalHandler();
+
         leftPanel.add(visualgui);
-        leftPanel.add(terminalgui);
+
+        terminalScrollPane.setViewportView(terminalhandler);
+
+        leftPanel.add(terminalScrollPane);
+
+        terminalScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        terminalScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    
 
         int frameWidth = frame.getWidth();
         scoregui.setPreferredSize(new Dimension(frameWidth / 3, frame.getHeight()));
@@ -44,12 +53,12 @@ public class MyWindow extends JFrame {
         frame.add(leftPanel, BorderLayout.CENTER);
         frame.add(scoregui, BorderLayout.EAST);
 
+
+
         addHandlers();
     }
 
     void addHandlers() {
-        terminalgui.setLayout(new BorderLayout()); // Set layout for proper stacking
-        new terminalHandler(terminalgui);
         new ScoreHandler(scoregui);
     }
 }

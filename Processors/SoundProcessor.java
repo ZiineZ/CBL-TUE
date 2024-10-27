@@ -8,10 +8,12 @@ public class SoundProcessor {
 
     private Clip problemSound;
     private Clip solvedSound;
+    private Clip backgroundMusic;
 
     public SoundProcessor() {
         problemSound = loadSound("Assets/problem.wav");
         solvedSound = loadSound("Assets/resolved.wav");
+        backgroundMusic = loadSound("Assets/backgroundmusic.wav");
     }
 
     private Clip loadSound(String filePath) {
@@ -39,4 +41,10 @@ public class SoundProcessor {
             solvedSound.start();
         }
     }
+    public void playBackgroundMusic() {
+        if (backgroundMusic != null) {
+            backgroundMusic.setFramePosition(0);
+            backgroundMusic.start();
+    }
+}
 }

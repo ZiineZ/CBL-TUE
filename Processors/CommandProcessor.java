@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.*;
+
+import javax.swing.SwingUtilities;
+
 import Handlers.ScoreHandler;
 import Handlers.terminalHandler;
 import Handlers.visualHandler;
@@ -32,6 +35,8 @@ public class CommandProcessor {
         NONE, SCANNED, MINED
     }
 
+    boolean started = false;
+
     terminalHandler myTerminalHandler;
     SoundProcessor mySoundProcessor = new SoundProcessor();
 
@@ -53,6 +58,7 @@ public class CommandProcessor {
     public CommandProcessor(terminalHandler terminal){
 
         myTerminalHandler = terminal;
+        ActionProcessor.getCommandProcesor(myCommandProcessor);
 
         commandlookup = new HashMap();
         InnerCommandProcessor icp = new InnerCommandProcessor();
@@ -76,13 +82,19 @@ public class CommandProcessor {
         commandlookup.put("system.resources.scan()", icp::resourcesScan);
         commandlookup.put("system.resources.mine()", icp::resourcesMine);
 
-        commandlookup.put("clear()", icp::clear);
+        commandlookup.put("system.help.temperature()", icp::helpTemperature);
+        commandlookup.put("system.help.ventilation()", icp::helpVentilation);
+        commandlookup.put("system.help.fuel()", icp::helpFuel);
+        commandlookup.put("system.help.mine()", icp::helpMine);
 
-        commandlookup.put("addscore()", icp::addscore);
+        commandlookup.put("system.getstatus()", icp::getState);
+
+        commandlookup.put("system.reboot()", icp::reboot);
+
+        commandlookup.put("clear()", icp::clear);
 
         commandlookup.put("start()", icp::start);
         commandlookup.put("stop()", icp::stop);
-
     }
     
     public void process(String command) {
@@ -92,7 +104,7 @@ public class CommandProcessor {
         if (lowercaseCommand.contains("(") && lowercaseCommand.contains(")")) {
             arguments = lowercaseCommand.substring(lowercaseCommand.indexOf("(")+1, lowercaseCommand.indexOf(")"));
         }
-        
+
         finalcommand = lowercaseCommand.replaceAll("\\(.*?\\)", "()");
 
         if (arguments.equals("ventilation") || arguments.equals("fuel")) {
@@ -129,6 +141,9 @@ public class CommandProcessor {
 
                 myTerminalHandler.addToTerminal("Ventilation system closed. Oxygen loss imminent.");
 
+                ScoreHandler.startOxygenCounting();
+                ScoreHandler.scoreCount(50);
+
             } else {
                 myTerminalHandler.addToTerminal("Cannot close ventilation systems in current state.");
             }
@@ -152,6 +167,8 @@ public class CommandProcessor {
 
                 myTerminalHandler.addToTerminal("Diagnostics completed. Identified issue: " + issueText);
 
+                ScoreHandler.scoreCount(50);
+
             } else {
                 myTerminalHandler.addToTerminal("Cannot run diagnostics in current state.");
             }
@@ -161,6 +178,9 @@ public class CommandProcessor {
             if (ventilationState == VentilationState.CLOGGED) {
                 ventilationState = VentilationState.FIXED;
                 myTerminalHandler.addToTerminal("Ventilation clog cleared.");
+
+                ScoreHandler.scoreCount(50);
+
             } else {
                 myTerminalHandler.addToTerminal("No clog to pump.");
             }
@@ -170,6 +190,9 @@ public class CommandProcessor {
             if (ventilationState == VentilationState.EMPTY_TANK) {
                 ventilationState = VentilationState.FIXED;
                 myTerminalHandler.addToTerminal("Oxygen tank refilled.");
+
+                ScoreHandler.scoreCount(50);
+
             } else {
                 myTerminalHandler.addToTerminal("No empty tank to refill.");
             }
@@ -179,6 +202,9 @@ public class CommandProcessor {
             if (ventilationState == VentilationState.LEAK) {
                 ventilationState = VentilationState.FIXED;
                 myTerminalHandler.addToTerminal("Leak welded.");
+
+                ScoreHandler.scoreCount(50);
+
             } else {
                 myTerminalHandler.addToTerminal("No leak to weld.");
             }
@@ -191,6 +217,10 @@ public class CommandProcessor {
                 visualHandler.changeLight(false, 1);
                 mySoundProcessor.playSolvedSound();
                 myTerminalHandler.addToTerminal("Ventilation system reopened.");
+
+                ScoreHandler.stopOxygenCounting();
+                ScoreHandler.scoreCount(100);
+
             } else {
                 myTerminalHandler.addToTerminal("Cannot open ventilation system in current state.");
             }
@@ -201,6 +231,9 @@ public class CommandProcessor {
                 engineState = EngineState.DIAGNOSTICS_RUN;
                 
                 myTerminalHandler.addToTerminal("Engine fuel level: " + EnginePercentage + "%");
+
+                ScoreHandler.scoreCount(50);
+
             } else {
                 myTerminalHandler.addToTerminal("Cannt run diagnostics on the engine in current state.");
             }
@@ -210,7 +243,10 @@ public class CommandProcessor {
             if (engineState == EngineState.DIAGNOSTICS_RUN) {
                 engineState = EngineState.STOPPED;
                 myTerminalHandler.addToTerminal("Engine stopped.");
-                // TODO stop going down...
+
+                ScoreHandler.scoreCount(50);
+                ScoreHandler.stopDepthCounting();
+
             } else {
                 myTerminalHandler.addToTerminal("Cannot stop engine in current state.");
             }
@@ -230,8 +266,12 @@ public class CommandProcessor {
                 if (userEnginePercentage == EnginePercentage) {
                     engineState = EngineState.REFUELED;
                     myTerminalHandler.addToTerminal("Engine succesfully refueled.");
+
+                    ScoreHandler.scoreCount(50);
+
                 } else {
                     myTerminalHandler.addToTerminal("Engine not properly refueled. Critical engine malfunction.");
+                    ActionProcessor.lose();
                 }
 
             } else {
@@ -245,6 +285,10 @@ public class CommandProcessor {
                 ActionProcessor.engineProblem = false;
                 visualHandler.changeLight(false, 2);
                 myTerminalHandler.addToTerminal("Engine started succesfully");
+
+                ScoreHandler.scoreCount(100);
+                ScoreHandler.startDepthCounting();
+
                 mySoundProcessor.playSolvedSound();
             } else {
                 myTerminalHandler.addToTerminal("Cannot start engine in current state");
@@ -255,6 +299,8 @@ public class CommandProcessor {
             if (coolantState == CoolantState.NONE) {
                 coolantState = CoolantState.TEMPERATURE_CHECKED;
                 myTerminalHandler.addToTerminal("The temperature is: " + temperature + "°C");
+
+                ScoreHandler.scoreCount(50);
             } else {
                 myTerminalHandler.addToTerminal("Unable to read the temperature in the current state.");
             }
@@ -277,6 +323,8 @@ public class CommandProcessor {
                coolantregulatornumber = (6 * 6 * 6 * (userTemperature + 10)) ^ (6 * 6 * (userTemperature + 10)) ^ (6 * (coolantregulatornumber + 10));
                coolantamount = (int)(coolantregulatornumber / 100);
                heatingamount = (int)(coolantregulatornumber % 100);
+
+               ScoreHandler.scoreCount(50);
 
                myTerminalHandler.addToTerminal("The following numbers regulate the temperature:\nCoolant: " + coolantamount + ". Heating: " + heatingamount + ".");
             } else {
@@ -305,6 +353,9 @@ public class CommandProcessor {
                     ActionProcessor.coolantProblem = false;
                     visualHandler.changeLight(false, 0);
                     mySoundProcessor.playSolvedSound();
+
+                    ScoreHandler.scoreCount(100);
+
                     myTerminalHandler.addToTerminal("Temperature succesfully regulated.");
                 } else {
                     myTerminalHandler.addToTerminal("Failed to regulate temperature, regulator numbers incorrect.");
@@ -315,31 +366,129 @@ public class CommandProcessor {
         }
 
         void resourcesScan() {
-            System.out.println("Scanning for ore deposits... Depth value detected.");
-            ScoreHandler.searchForOre();
+            if (resourceState == ResourceState.NONE) {
+                resourceState = ResourceState.SCANNED;
+                visualHandler.changeLight(true, 3);
+                int depth = ScoreHandler.searchForOre();
+                myTerminalHandler.addToTerminal("ore found at: " + depth + " km.");
+                mySoundProcessor.playProblemSound();
+            }
+            
         }
 
         void resourcesMine() {
-            System.out.println("Mining ore... Ensure you are within the correct depth range.");
-            ScoreHandler.mineOre();
+            if(ScoreHandler.mineOre()) {
+                resourceState = ResourceState.NONE;
+                visualHandler.changeLight(false, 3);
+                mySoundProcessor.playSolvedSound();
+                int oreScore = new Random().nextInt(300, 1000);
+                ScoreHandler.scoreCount(oreScore);
+                myTerminalHandler.addToTerminal("Ore mining succesfull! +" + oreScore + " score gained!");
+            }
+            else{
+                resourceState = ResourceState.NONE;
+                visualHandler.changeLight(false, 3);
+                myTerminalHandler.addToTerminal("Ore mining failed.");
+            }
         }
 
         void clear() {
             myTerminalHandler.clear();
         }
 
-        void addscore() {
-            ScoreHandler.scoreCount(100);
-        }
-
         void start() {
+            if (started) {
+                return;
+            }
+
             ScoreHandler.startTimeCounting();
             ScoreHandler.startDepthCounting();
             ActionProcessor.startActions(myCommandProcessor);
+            mySoundProcessor.playBackgroundMusic();
         }
 
         void stop() {
             ActionProcessor.stopActions();
+        }
+
+        void helpTemperature() {
+            String text = "To manage the temperature of your ship's coolant system, follow these steps:\n" +
+                    "1. Check the current temperature:\n" +
+                    "   `System.coolant.read()`\n" +
+                    "   Displays the current coolant temperature.\n" +
+                    "2. Adjust coolant and heat pipes:\n" +
+                    "   `System.coolant.regulator({temperature})`\n" +
+                    "   Calculates the required heat and coolant percentages.\n" +
+                    "3. Set the heat and coolant percentages:\n" +
+                    "   `System.coolant.set({heat percentage}, {coolant percentage})`\n" +
+                    "   Adjusts the flow rates to stabilize the system.";
+
+            myTerminalHandler.addToTerminal(text);
+        }
+
+        void helpVentilation() {
+            String text = "To resolve a ventilation problem, follow these steps:\n" +
+                    "1. Shut off the ventilation system:\n" +
+                    "   `System.ventilation.close()`\n" +
+                    "   Stops oxygen from escaping.\n" +
+                    "2. Run diagnostics to identify the problem:\n" +
+                    "   `System.repairtool.diagnostics(ventilation)`\n" +
+                    "   Checks for issues in the ventilation system.\n" +
+                    "3. Address the specific issue based on the diagnostics:\n" +
+                    "   - If pipes are clogged:\n" +
+                    "     `System.pressurecontroller.pump(ventilation)`\n" +
+                    "     Clears blockages.\n" +
+                    "   - If the oxygen tank is empty:\n" +
+                    "     `System.supply.refill(oxygen)`\n" +
+                    "     Refills the oxygen tank.\n" +
+                    "   - If there is a leak:\n" +
+                    "     `System.repairtool.weld(ventilation)`\n" +
+                    "     Repairs the leak.\n" +
+                    "4. Reopen the ventilation system:\n" +
+                    "   `System.ventilation.open()`\n" +
+                    "   Restores airflow.";
+
+            myTerminalHandler.addToTerminal(text);
+        }
+
+        void helpFuel() {
+            String text = "To safely refuel your ship, follow these steps:\n" +
+                    "1. Check the fuel level:\n" +
+                    "   `System.repairtool.diagnostics(fuel)`\n" +
+                    "   Displays fuel level as a percentage.\n" +
+                    "2. Stop the engine before refueling:\n" +
+                    "   `System.engine.stop()`\n" +
+                    "   Shuts down the engine.\n" +
+                    "3. Refuel the engine:\n" +
+                    "   `System.engine.refuel({percentage})`\n" +
+                    "   Specify the amount of fuel to add.\n" +
+                    "4. Restart the engine:\n" +
+                    "   `System.engine.start()`\n" +
+                    "   Restarts the engine for continued operation.";
+
+            myTerminalHandler.addToTerminal(text);
+        }
+
+        void helpMine() {
+            String text = "To mine ores and get extra points, follow these steps:\n" +
+            "1. Scan for ore nearby:\n" +
+            "   'system.resources.scan()'\n" +
+            "2. Mine the ore when you are 500-0 meters infront of it.\n" +
+            "   'system.resources.mine()'";
+
+            myTerminalHandler.addToTerminal(text);
+        }
+
+        void getState() {
+        myTerminalHandler.addToTerminal("Current System States:");
+        myTerminalHandler.addToTerminal("Ventilation State: " + ventilationState);
+        myTerminalHandler.addToTerminal("Engine State: " + engineState);
+        myTerminalHandler.addToTerminal("Coolant State: " + coolantState);
+        myTerminalHandler.addToTerminal("Resource State: " + resourceState);
+        }
+
+        void reboot() {
+            System.exit(0);
         }
 
     }

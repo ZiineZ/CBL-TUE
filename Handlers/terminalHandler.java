@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class terminalHandler extends JTextArea {
 
-    private int immutableLength = 2;
+    private int immutableLength = 0;
     CommandProcessor cp = new CommandProcessor(this);
 
     @Override
@@ -18,18 +18,21 @@ public class terminalHandler extends JTextArea {
         super.paintComponent(g);
         Image img = new ImageIcon("Assets/scanlines.png").getImage();
         Graphics2D g2d = (Graphics2D) g;
+        int imgHeight = img.getHeight(this);
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f));
-        g2d.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+
+        for (int y = 0; y < getHeight(); y += imgHeight) {
+            g2d.drawImage(img, 0, y, this);
+        }
+
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     }
 
-    public terminalHandler(JPanel parentPanel) {
-        this.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
+    public terminalHandler() {
+        //this.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
         this.setBackground(new Color(34, 34, 34));
         this.setForeground(new Color(57, 255, 20));
-        this.setOpaque(true);
-        this.setText("> ");
-        this.setCaretPosition(immutableLength);
+        this.setVisible(true);
         
         try {
             Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Assets/Linebeam.ttf"));
@@ -39,28 +42,29 @@ public class terminalHandler extends JTextArea {
             e.printStackTrace();
         }
 
-        // Create a JScrollPane and add the JTextArea
-        JScrollPane scrollPane = new JScrollPane(this);
-        scrollPane.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-
-        // Create the JLayeredPane and the JLabel for scanlines
-        JLayeredPane scanlinesLayer = new JLayeredPane();
-        scanlinesLayer.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
-
-        parentPanel.setLayout(new BorderLayout());
-        parentPanel.add(scrollPane, BorderLayout.CENTER);
-
-        parentPanel.revalidate();
-        parentPanel.repaint();
-
         this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 handleKeyPress(e);
             }
         });
+
+        this.setText("Welcome to TTC-300, Operator!\n" +
+                "You are in charge of a new experimental mining vehicle.\n" +
+                "Take a look at the lamp dashboard above.\n" +
+                "If a lamp lights up, it indicates a problem!\n" +
+                "To resolve issues, specific commands must be entered.\n" +
+                "There are three types of problems: Temperature, Ventilation and Fuel!\n" +
+                "The fourth lamp indicates ore mining, which can earn you extra points!\n" +
+                "To see the commands you need to input, type: ex: 'system.help.mine()'\n" +
+                "Or for example: 'system.help.temperature()' etc.\n" +
+                "To see the current state of your ships type: system.getstatus()\n" +
+                "Beware: when three problems are active, pray for your survival!\n" +
+                "To start the game type: 'start()'\n" +
+                "\n> ");
+        setImmutableLength();
+        this.setCaretPosition(immutableLength);
+
     }
 
     public void handleKeyPress(KeyEvent e) {
@@ -106,7 +110,7 @@ public class terminalHandler extends JTextArea {
     }
 
     public void addToTerminal(String text) {
-        this.append("\n" + text);
+        this.append("\n" + text + "\n");
         setImmutableLength();
     }
 

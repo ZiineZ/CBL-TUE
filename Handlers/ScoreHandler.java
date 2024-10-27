@@ -5,6 +5,9 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
+
+import Processors.ActionProcessor;
+
 import java.util.Random;
 
 public class ScoreHandler {
@@ -13,11 +16,11 @@ public class ScoreHandler {
     private static int oreLocation = -1;
     private static boolean oreFound = false;
 
-    private static final int DEPTH_UPDATE_INTERVAL = 1000;
+    private static final int DEPTH_UPDATE_INTERVAL = 10;
     
 
-    private static int score;
-    private static int depth;
+    public static int score;
+    public static int depth;
     private static int TimeInSeconds;
     private static int percentage = 100;
     private static int minedOre;
@@ -32,6 +35,8 @@ public class ScoreHandler {
 
     private Font customFont;
     
+    private static Timer oxygenTimer;
+    private static Timer depthTimer;
 
     public ScoreHandler(JPanel parentPanel) {
 
@@ -40,98 +45,93 @@ public class ScoreHandler {
         TimeInSeconds = 0;
         minedOre = 0;
 
-        parentPanel.setLayout(null);
-        JLabel scoreText, time, depthText, oxygen, ore;
+        // Use BoxLayout to stack components vertically
+        parentPanel.setLayout(new BoxLayout(parentPanel, BoxLayout.Y_AXIS));
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
         usingCustomFonts();
 
+        centerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Optional spacing
+
         // Score
-        scoreText = new JLabel("Score");
-        scoreText.setFont(customFont.deriveFont(45f));
-        scoreText.setForeground(Color.YELLOW);
-        scoreText.setVisible(true);
-        scoreText.setBounds(118, 30, 100, 30);
-        parentPanel.add(scoreText);
+        JLabel scoreText = new JLabel("Score");
+        scoreText.setFont(customFont.deriveFont(40f));
+        scoreText.setForeground(Color.BLACK);
+        centerPanel.add(scoreText);
 
         scoreLabel = new JLabel("0");
-        scoreLabel.setFont(customFont);
-        scoreLabel.setForeground(Color.YELLOW);
-        scoreLabel.setVisible(true);
-        scoreLabel.setBounds(152, 64, 100, 30);
-        parentPanel.add(scoreLabel);
+        scoreLabel.setFont(customFont.deriveFont(25f));
+        scoreLabel.setForeground(Color.BLACK);
+        centerPanel.add(scoreLabel);
+
+        centerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Optional spacing
 
         // Time
-        time = new JLabel("Time");
-        time.setVisible(true);
-        time.setFont(customFont.deriveFont(45f));
-        time.setForeground(Color.YELLOW);
-        time.setBounds(130, 110, 100, 30);
-        parentPanel.add(time);
+        JLabel time = new JLabel("Time");
+        time.setFont(customFont.deriveFont(40f));
+        time.setForeground(Color.BLACK);
+        centerPanel.add(time);
 
         timeLabel = new JLabel("00:00");
-        timeLabel.setVisible(true);
-        timeLabel.setFont(customFont);
-        timeLabel.setForeground(Color.YELLOW);
-        timeLabel.setBounds(126, 150, 100, 30);
-        parentPanel.add(timeLabel);
+        timeLabel.setFont(customFont.deriveFont(25f));
+        timeLabel.setForeground(Color.BLACK);
+        centerPanel.add(timeLabel);
+
+        centerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Optional spacing
 
         // Depth
-        depthText = new JLabel("Depth");
-        depthText.setFont(customFont.deriveFont(45f));
-        depthText.setForeground(Color.YELLOW);
-        depthText.setVisible(true);
-        depthText.setBounds(120, 200, 100, 30);
-        parentPanel.add(depthText);
+        JLabel depthText = new JLabel("Depth");
+        depthText.setFont(customFont.deriveFont(40f));
+        depthText.setForeground(Color.BLACK);
+        centerPanel.add(depthText);
 
         depthLabel = new JLabel("0");
-        depthLabel.setFont(customFont.deriveFont(45f));
-        depthLabel.setForeground(Color.YELLOW);
-        depthLabel.setVisible(true);
-        depthLabel.setBounds(136, 238, 100, 30);
-        parentPanel.add(depthLabel);
+        depthLabel.setFont(customFont.deriveFont(25f));
+        depthLabel.setForeground(Color.BLACK);
+        centerPanel.add(depthLabel);
+
+        centerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Optional spacing
 
         // Oxygen
-        oxygen = new JLabel("Oxygen");
-        oxygen.setFont(customFont.deriveFont(40f));
-        oxygen.setForeground(Color.YELLOW);
-        oxygen.setVisible(true);
-        oxygen.setBounds(114, 300, 100, 30);
-        parentPanel.add(oxygen);
+        JLabel oxygen = new JLabel("Oxygen");
+        oxygen.setFont(customFont.deriveFont(40));
+        oxygen.setForeground(Color.BLACK);
+        centerPanel.add(oxygen);
 
         oxygenLabel = new JLabel("(100)%");
-        oxygenLabel.setFont(customFont);
-        oxygenLabel.setForeground(Color.YELLOW);
-        oxygenLabel.setVisible(true);
-        oxygenLabel.setBounds(127, 340, 100, 30);
-        parentPanel.add(oxygenLabel);
+        oxygenLabel.setFont(customFont.deriveFont(25f));
+        oxygenLabel.setForeground(Color.BLACK);
+        centerPanel.add(oxygenLabel);
+
+        centerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Optional spacing
 
         // Ore
-        ore  = new JLabel("Ore");
-        ore.setFont(customFont.deriveFont(45f));
-        ore.setForeground(Color.YELLOW);
-        ore.setVisible(true);
-        ore.setBounds(136, 400, 100, 30);
-        parentPanel.add(ore);
+        JLabel ore = new JLabel("Ore");
+        ore.setFont(customFont.deriveFont(40));
+        ore.setForeground(Color.BLACK);
+        centerPanel.add(ore);
 
         oreLabel = new JLabel("0 Mined");
-        oreLabel.setFont(customFont.deriveFont(35f));
-        oreLabel.setForeground(Color.YELLOW);
-        oreLabel.setVisible(true);
-        oreLabel.setBounds(118, 445, 100, 30);
-        parentPanel.add(oreLabel);
+        oreLabel.setFont(customFont.deriveFont(25f));
+        oreLabel.setForeground(Color.BLACK);
+        centerPanel.add(oreLabel);
+        centerPanel.setOpaque(false);
 
 
-        //startDepthCounting();
-        //startTimeCounting();
-        //startOxygenCounting();
+        // Set alignment for the centerPanel to center in the parent panel
+        centerPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the panel itself
+        parentPanel.setLayout(new BoxLayout(parentPanel, BoxLayout.Y_AXIS)); // Use BoxLayout for the parent
+        parentPanel.add(centerPanel); // Add the centered panel to the parent
+
     }
 
     void usingCustomFonts() {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try {
-            File fontFile = new File("Assets/BroncoPersonalUse.ttf");
+            File fontFile = new File("Assets/impacted.ttf");
             if (fontFile.exists()) {
-                customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(40f);
+                customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(30f);
                 ge.registerFont(customFont);
                 System.out.println("Font registered: " + customFont.getFontName());
             }
@@ -141,7 +141,7 @@ public class ScoreHandler {
     }
 
     public static void startDepthCounting() {
-        Timer depthTimer = new Timer(DEPTH_UPDATE_INTERVAL, new ActionListener() {
+        depthTimer = new Timer(DEPTH_UPDATE_INTERVAL, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 depth += 1;
@@ -149,6 +149,10 @@ public class ScoreHandler {
             }
         });
         depthTimer.start();
+    }
+
+    public static void stopDepthCounting() {
+        depthTimer.stop();
     }
 
     public static void startTimeCounting() {
@@ -163,8 +167,8 @@ public class ScoreHandler {
         
     }
 
-    private void startOxygenCounting() {
-        Timer oxygenTimer = new Timer(100, new ActionListener() {
+    public static void startOxygenCounting() {
+        oxygenTimer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 percentage = percentage - 1;
@@ -172,6 +176,12 @@ public class ScoreHandler {
             }
         });
         oxygenTimer.start();
+    }
+
+    public static void stopOxygenCounting() {
+        oxygenTimer.stop();
+        percentage = 100;
+        updateOxygenLabel();
     }
     
     // Score
@@ -191,7 +201,7 @@ public class ScoreHandler {
     }
 
     private static void updateDepthLabel() {
-        depthLabel.setText("" + depth);
+        depthLabel.setText("" + depth + " km");
        
     }
 
@@ -210,6 +220,7 @@ public class ScoreHandler {
         oxygenLabel.setText(oxygenDisplay);
         if (roundedPercentage <= 0) {
             oxygenLabel.setText("(0%)"); 
+            ActionProcessor.lose();
         }
     }
 
@@ -229,18 +240,18 @@ public class ScoreHandler {
         oreFound = true;
     }
 
-    public static void searchForOre() {
+    public static int searchForOre() {
         generateOre();
-        System.out.println("Ore located in depth: " + oreLocation);
+        return oreLocation;
     }
 
-    public static void mineOre() {
+    public static Boolean mineOre() {
         if (oreFound && (oreLocation - depth <= 500 && depth <= oreLocation)) {
             oreCount(1);
-            scoreCount(500);
             oreFound = false;
+            return true;
         } else {
-            System.out.println("Nothing FOUND!");
+            return false;
         }
     }
 

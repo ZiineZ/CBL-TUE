@@ -2,6 +2,8 @@ package Processors;
 
 import javax.swing.*;
 
+import Handlers.ScoreHandler;
+import Handlers.terminalHandler;
 import Handlers.visualHandler;
 import Processors.CommandProcessor.CoolantState;
 import Processors.CommandProcessor.EngineState;
@@ -17,13 +19,16 @@ public class ActionProcessor {
 
     static long prevtime = System.currentTimeMillis();
     static long deltaTime = 0;
-    static float totalTime = 0;
-    static float updateCount = 5;
+    static float totalTime = 100;
+    static float updateCount = 9;
     static Random random;
 
     private static Timer timer;
 
+    private static int firstActions = 0;
+
     private static CommandProcessor myCommandProcessor;
+    private static terminalHandler myTerminalHandler;
     private static SoundProcessor mySoundProcessor = new SoundProcessor();
 
     static {
@@ -73,10 +78,6 @@ public class ActionProcessor {
 
     }
 
-    public static void oreAction() {
-
-    }
-
     private static void update() {
         
         long time = System.currentTimeMillis();
@@ -93,7 +94,7 @@ public class ActionProcessor {
         float remainingTime = 1000 - totalTime;
 
         // The rate of increase diminishes as totalTime gets closer to MAX_TIME
-        float increase = (float) (remainingTime * (1 - Math.exp(-deltaTimeScaled / 100000.0)));  // Exponential decay formula
+        float increase = (float) (remainingTime * (1 - Math.exp(-deltaTimeScaled / 1000000.0)));  // Exponential decay formula
 
         totalTime += increase;
 
@@ -102,10 +103,17 @@ public class ActionProcessor {
             totalTime = 1000;
         }
 
-        //System.out.println("Total Time: " + totalTime + " " + deltaTimeScaled);
+        System.out.println("Total Time: " + totalTime + " " + deltaTimeScaled);
 
         if (updateCount == 10){
             updateCount = 0;
+            
+            firstActions++;
+
+            if (firstActions == 3 ) {
+                executeAction();
+                return;
+            }
 
             float randomFloat = random.nextFloat() * 10000;
 
@@ -122,7 +130,8 @@ public class ActionProcessor {
         int randomInt = random.nextInt(3);
 
         if (coolantProblem && ventilationProblem && engineProblem) {
-            //TODO TRIGGER GAME END!
+
+            return;
         }
                     
         switch(randomInt) {
@@ -149,5 +158,26 @@ public class ActionProcessor {
             break;
         }
     }
+
+    public static void getCommandProcesor(CommandProcessor myCommandProcessorPassed) {
+        myCommandProcessor = myCommandProcessorPassed;
+        myTerminalHandler = myCommandProcessor.myTerminalHandler;
+    }
+
+    public static void lose() {
+
+        stopActions();
+
+        ScoreHandler.stopOxygenCounting();
+        ScoreHandler.stopDepthCounting();
+
+
+        float totalscore = (ScoreHandler.score * ScoreHandler.depth) / 100;
+
+        myTerminalHandler.addToTerminal("The mining operation failed... Total Score: " + totalscore);
+        myTerminalHandler.addToTerminal("");
+        myTerminalHandler.addToTerminal("To restart the game type: 'system.reboot()'");
+    }
+
 }
     

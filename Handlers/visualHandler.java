@@ -38,25 +38,25 @@ public class visualHandler extends JPanel {
 
     
 
-    JLabel tempicon = new JLabel();
-    JLabel venticon = new JLabel();
-    JLabel fuelicon = new JLabel();
-    JLabel oreicon = new JLabel();
+    static JLabel tempicon = new JLabel();
+    static JLabel venticon = new JLabel();
+    static JLabel fuelicon = new JLabel();
+    static JLabel oreicon = new JLabel();
 
     static JLabel templampicon = new JLabel();
     static JLabel ventlampicon = new JLabel();
     static JLabel fuellampicon = new JLabel();
-    JLabel orelampicon = new JLabel();
+    static JLabel orelampicon = new JLabel();
 
-    ImageIcon temp = new ImageIcon("Assets/temperaturemeter.png");
-    ImageIcon vent = new ImageIcon("Assets/ventilationmeter.png");
-    ImageIcon fuel = new ImageIcon("Assets/gasmeter.png");
-    ImageIcon ore = new ImageIcon("Assets/oremeter.png");
+    static ImageIcon temp = new ImageIcon("Assets/temperaturemeter.png");
+    static ImageIcon vent = new ImageIcon("Assets/ventilationmeter.png");
+    static ImageIcon fuel = new ImageIcon("Assets/gasmeter.png");
+    static ImageIcon ore = new ImageIcon("Assets/oremeter.png");
 
     static ImageIcon templamp = new ImageIcon("Assets/lightbulboff.png");
     static ImageIcon ventlamp = new ImageIcon("Assets/lightbulboff.png");
     static ImageIcon fuellamp = new ImageIcon("Assets/lightbulboff.png");
-    ImageIcon orelamp = new ImageIcon("Assets/lightbulboff.png");
+    static ImageIcon orelamp = new ImageIcon("Assets/lightbulboff.png");
 
     public visualHandler() {
 
@@ -127,23 +127,43 @@ public class visualHandler extends JPanel {
         switch (action) {
             case 0:
                 icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
+                resizeIcons(tempicon, temp, temperaturePanel, 80);
                 resizeIcons(templampicon, icon, temperaturePanel, 120);
-                temperaturePanel.revalidate();
-                temperaturePanel.repaint();
+                temperaturePanel.add(tempicon);
+                temperaturePanel.add(templampicon);
                 break;
             case 1:
                 icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
+                resizeIcons(venticon, vent, ventilationPanel, 80);
                 resizeIcons(ventlampicon, icon, ventilationPanel, 120);
-                ventilationPanel.revalidate();
-                ventilationPanel.repaint();
+                ventilationPanel.add(venticon);
+                ventilationPanel.add(ventlampicon);
                 break;
             case 2:
                 icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
+                resizeIcons(fuelicon, fuel, fuelPanel, 80);
                 resizeIcons(fuellampicon, icon, fuelPanel, 120);
-                fuelPanel.revalidate();
-                fuelPanel.repaint();
+                fuelPanel.add(fuelicon);
+                fuelPanel.add(fuellampicon);
                 break;
+            case 3:
+                icon = state ? new ImageIcon("Assets/lightbulb.png") : new ImageIcon("Assets/lightbulboff.png");
+                resizeIcons(oreicon, ore, orePanel, 80);
+                resizeIcons(orelampicon, icon, orePanel, 120);
+                orePanel.add(oreicon);
+                orePanel.add(orelampicon);
+            break;
         }
+
+        temperaturePanel.revalidate();
+        temperaturePanel.repaint();
+        ventilationPanel.revalidate();
+        ventilationPanel.repaint();
+        fuelPanel.revalidate();
+        fuelPanel.repaint();
+        orePanel.revalidate();
+        orePanel.repaint();
+
     }
 
 }
