@@ -1,10 +1,9 @@
 import javax.swing.*;
 import Handlers.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-
+/**
+ * main class for rendering the panels.
+ */
 public class MyWindow extends JFrame {
 
     JScrollPane terminalScrollPane = new JScrollPane();
@@ -16,6 +15,9 @@ public class MyWindow extends JFrame {
         };
     };
 
+    /*
+     * sets window properties such as size and initializes upcoming panels.
+     */
     MyWindow() {
         this.setTitle("TTC-300");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,6 +30,9 @@ public class MyWindow extends JFrame {
         
     }
 
+    /*
+     * initializes the panels such as visualpanel and terminalpanel. also creates the layout
+     */
     void initPanels(JFrame frame) {
         frame.setLayout(new BorderLayout(5, 5));
 

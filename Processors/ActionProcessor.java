@@ -10,7 +10,9 @@ import Processors.CommandProcessor.EngineState;
 import Processors.CommandProcessor.VentilationState;
 
 import java.util.Random;
-
+/**
+ * Class for managing the 4 types of problems/actions that can be happening in the game.
+ */
 public class ActionProcessor {
 
     public static Boolean ventilationProblem = false;
@@ -47,7 +49,9 @@ public class ActionProcessor {
     }
 
 
-    
+    /**
+     * manages the ventilation problems and resolves possible edge-cases.
+     */
     public static void ventilationAction() {
         ventilationProblem = true;
         System.out.println("there is a problem with the ships ventilation");
@@ -59,6 +63,9 @@ public class ActionProcessor {
 
     }
 
+    /**
+     * manages the temperature problems and resolves possible edge-cases.
+     */
     public static void temperatureAction() {
         coolantProblem = true;
         myCommandProcessor.temperature = new Random().nextInt(61) - 10;
@@ -68,6 +75,9 @@ public class ActionProcessor {
         myCommandProcessor.coolantState = CoolantState.NONE;
     }
 
+    /**
+     * manages the fuel problems and resolves possible edge-cases.
+     */
     public static void fuelAction() {
         engineProblem = true;
         myCommandProcessor.EnginePercentage = new Random().nextInt(100) + 1;
@@ -78,6 +88,9 @@ public class ActionProcessor {
 
     }
 
+    /**
+     * update loop for the game such as the increasing change for a problem to happen.
+     */
     private static void update() {
         
         long time = System.currentTimeMillis();
@@ -87,6 +100,10 @@ public class ActionProcessor {
         randomActionGenerator(deltaTime);
     }
 
+    /**
+     * generetes a random action after a random period of time, the longer the user is in the game the more problems will occur.
+     * @param deltaTime
+     */
     private static void randomActionGenerator(long deltaTime) {
 
         double deltaTimeScaled = deltaTime;
@@ -126,6 +143,9 @@ public class ActionProcessor {
 
     }
 
+    /**
+     * executes a random action based on random number generation
+     */
     private static void executeAction() {
         int randomInt = random.nextInt(3);
 
@@ -164,6 +184,9 @@ public class ActionProcessor {
         myTerminalHandler = myCommandProcessor.myTerminalHandler;
     }
 
+    /**
+     * method for managing what the game must do when you lose, which shows you your totalscore etc...
+     */
     public static void lose() {
 
         stopActions();
@@ -176,7 +199,7 @@ public class ActionProcessor {
 
         myTerminalHandler.addToTerminal("The mining operation failed... Total Score: " + totalscore);
         myTerminalHandler.addToTerminal("");
-        myTerminalHandler.addToTerminal("To restart the game type: 'system.reboot()'");
+        myTerminalHandler.addToTerminal("To shutdown the game type: 'system.shutdown()'");
     }
 
 }

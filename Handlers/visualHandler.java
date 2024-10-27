@@ -2,7 +2,9 @@ package Handlers;
 
 import java.awt.*;
 import javax.swing.*;
-
+/**
+ * This class handles the top left visual part, such as loading the icons but also managing the state of the lights.
+ */
 public class visualHandler extends JPanel {
 
     static Image metalbackground = new ImageIcon("Assets/metalpanel.png").getImage();
@@ -37,7 +39,9 @@ public class visualHandler extends JPanel {
     };
 
     
-
+    /**
+     * variable initilization.
+     */
     static JLabel tempicon = new JLabel();
     static JLabel venticon = new JLabel();
     static JLabel fuelicon = new JLabel();
@@ -58,6 +62,9 @@ public class visualHandler extends JPanel {
     static ImageIcon fuellamp = new ImageIcon("Assets/lightbulboff.png");
     static ImageIcon orelamp = new ImageIcon("Assets/lightbulboff.png");
 
+    /**
+     * creates the default layout for the visualhanler and adds appropriate icons and lights.
+     */
     public visualHandler() {
 
         this.setLayout(new GridLayout(2, 2));
@@ -81,6 +88,10 @@ public class visualHandler extends JPanel {
         addImageIcons();
     }
 
+
+    /**
+     * resizes the icons appropriately and adds them to the panel.
+     */
     void addImageIcons() {
 
         resizeIcons(tempicon, temp, temperaturePanel, 80);
@@ -104,6 +115,14 @@ public class visualHandler extends JPanel {
         orePanel.add(orelampicon);
     }
 
+    /**
+     * Method for resizing the icons appropriately.
+     * makes the icons a 1:1 ratio and aligns them with gridbagconstraints.
+     * @param label
+     * @param imageIcon
+     * @param panel
+     * @param height
+     */
     private static void resizeIcons(JLabel label,ImageIcon imageIcon, JPanel panel, int height) {
         Image image = imageIcon.getImage();
         Image scaledImage = image.getScaledInstance(height, height, Image.SCALE_SMOOTH);
@@ -121,7 +140,11 @@ public class visualHandler extends JPanel {
         panel.add(label, gbc);
 
     }
-
+/**
+ * method for changing the light status and making sure everything around that gets updtaed correctly.
+ * @param state
+ * @param action
+ */
     public static void changeLight(boolean state, int action) {
         ImageIcon icon;
         switch (action) {

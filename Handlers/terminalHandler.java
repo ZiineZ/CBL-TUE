@@ -7,7 +7,9 @@ import java.awt.event.*;
 import java.io.InputStream;
 import java.io.File;
 import java.io.IOException;
-
+/**
+ * this class sets the working and looks of the terminal you see at the bottom left of the game.
+ */
 public class terminalHandler extends JTextArea {
 
     private int immutableLength = 0;
@@ -28,6 +30,9 @@ public class terminalHandler extends JTextArea {
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     }
 
+    /**
+     * initializes standard values for the terminal such as: font, keylisteners and starting text.
+     */
     public terminalHandler() {
         //this.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
         this.setBackground(new Color(34, 34, 34));
@@ -66,7 +71,9 @@ public class terminalHandler extends JTextArea {
         this.setCaretPosition(immutableLength);
 
     }
-
+    /**
+     * this handles every keypress which is excercised onto the console. this makes the console act like a console instead of a textbox.
+     */
     public void handleKeyPress(KeyEvent e) {
 
         if ((e.isControlDown() || e.isMetaDown()) && e.getKeyCode() == KeyEvent.VK_A) {
@@ -91,6 +98,9 @@ public class terminalHandler extends JTextArea {
         }
     }
 
+    /**
+     * captures the command inputted by the user.
+     */
     private void captureAndExecuteCommand() {
         String fulltext = this.getText();
         String currentCommand = fulltext.substring(immutableLength).trim();
@@ -100,6 +110,10 @@ public class terminalHandler extends JTextArea {
         setImmutableLength();
     }
 
+    /**
+     * executes the command and forwards it to the commandprocessor.
+     * @param command
+     */
     public void executeCommand(String command) {
         System.out.println("Executed command: " + command);
         cp.process(command);
@@ -114,6 +128,9 @@ public class terminalHandler extends JTextArea {
         setImmutableLength();
     }
 
+    /**
+     * clears the terminal screen.
+     */
     public void clear() {
         SwingUtilities.invokeLater(() -> {
             this.setText("> ");

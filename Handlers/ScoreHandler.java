@@ -10,6 +10,9 @@ import Processors.ActionProcessor;
 
 import java.util.Random;
 
+/**
+ * scorehandler manages everything you see on the right hand side of the game, such as score, depth etc.
+ */
 public class ScoreHandler {
 
 
@@ -38,6 +41,11 @@ public class ScoreHandler {
     private static Timer oxygenTimer;
     private static Timer depthTimer;
 
+    /**
+     * scorehandler constructor.
+     * initializes panels and manages layout
+     * @param parentPanel
+     */
     public ScoreHandler(JPanel parentPanel) {
 
         score = 0;
@@ -126,6 +134,9 @@ public class ScoreHandler {
 
     }
 
+    /**
+     * method to import and use custom fonts.
+     */
     void usingCustomFonts() {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try {
@@ -140,6 +151,9 @@ public class ScoreHandler {
         }
     }
 
+    /**
+     * starts the depthtimer which makes the depth increase.
+     */
     public static void startDepthCounting() {
         depthTimer = new Timer(DEPTH_UPDATE_INTERVAL, new ActionListener() {
             @Override
@@ -155,6 +169,9 @@ public class ScoreHandler {
         depthTimer.stop();
     }
 
+    /*
+     * starts the time counter which makes the time increase;
+     */
     public static void startTimeCounting() {
         Timer timeTimer = new Timer(1000, new ActionListener() {
             @Override
@@ -167,6 +184,9 @@ public class ScoreHandler {
         
     }
 
+    /*
+     * Starts the oxygen counter which makes the oxygen decrease.
+     */
     public static void startOxygenCounting() {
         oxygenTimer = new Timer(100, new ActionListener() {
             @Override
@@ -178,13 +198,18 @@ public class ScoreHandler {
         oxygenTimer.start();
     }
 
+    /*
+     * stops the oxygen timer and sets the oxygen values to 100.
+     */
     public static void stopOxygenCounting() {
         oxygenTimer.stop();
         percentage = 100;
         updateOxygenLabel();
     }
     
-    // Score
+    /*
+     * increases the score count by the amount of points.
+     */
     public static void scoreCount(int points) {
         score += points;
         updateScoreLabel(); 
@@ -194,7 +219,6 @@ public class ScoreHandler {
         scoreLabel.setText("" + score);
     }
 
-    //  Depth
     public static void depthCount(int depthMeters) {
         depth += depthMeters;
         updateDepthLabel();
@@ -202,10 +226,11 @@ public class ScoreHandler {
 
     private static void updateDepthLabel() {
         depthLabel.setText("" + depth + " km");
-       
     }
 
-    // Time
+    /**
+     * updates the time label and formats it correctly.
+     */
     private static void updateTimeLabel() {
         int minutes = TimeInSeconds / 60;
         int seconds = TimeInSeconds % 60;
@@ -213,7 +238,9 @@ public class ScoreHandler {
         timeLabel.setText(timeDisplay);
     }
 
-    // Oxygen
+    /**
+     * updates the oxygen label and formats it correctly.
+     */
     private static void updateOxygenLabel() {
         int roundedPercentage = (int) Math.round(percentage);
         String oxygenDisplay = String.format("(%d%%)", roundedPercentage);
@@ -224,7 +251,6 @@ public class ScoreHandler {
         }
     }
 
-    // Ore
     public static void oreCount(int amountOfOre) {
         minedOre += amountOfOre;
         updateOreLabel();
@@ -234,6 +260,9 @@ public class ScoreHandler {
         oreLabel.setText(minedOre + " Mined");
     }
 
+    /**
+     * generate a randomDepth number.
+     */
     private static void generateOre() {
         int randomDepth = (random.nextInt(10) + 8) * 100;
         oreLocation = randomDepth + depth;
@@ -245,6 +274,10 @@ public class ScoreHandler {
         return oreLocation;
     }
 
+    /**
+     * manages if the ore can be mined and the appropriate behaviour.
+     * @return
+     */
     public static Boolean mineOre() {
         if (oreFound && (oreLocation - depth <= 500 && depth <= oreLocation)) {
             oreCount(1);

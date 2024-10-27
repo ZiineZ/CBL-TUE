@@ -4,6 +4,9 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * this class handles the loading and playing of custom sounds.
+ */
 public class SoundProcessor {
 
     private Clip problemSound;
@@ -16,6 +19,9 @@ public class SoundProcessor {
         backgroundMusic = loadSound("Assets/backgroundmusic.wav");
     }
 
+    /**
+     * properly loads the sounds to the file.
+     */
     private Clip loadSound(String filePath) {
         try {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(filePath));
@@ -27,7 +33,9 @@ public class SoundProcessor {
             return null;
         }
     }
-
+    /**
+     * the upcoming methods all make sure that their own sound is being played.
+     */
     public void playProblemSound() {
         if (problemSound != null) {
             problemSound.setFramePosition(0);

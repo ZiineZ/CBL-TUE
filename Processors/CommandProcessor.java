@@ -12,7 +12,9 @@ import Handlers.terminalHandler;
 import Handlers.visualHandler;
 
 
-
+/**
+ * this processes all commands inputted by the user and executes appropriate methods.
+ */
 public class CommandProcessor {
 
     CommandProcessor myCommandProcessor = this;
@@ -20,8 +22,6 @@ public class CommandProcessor {
     public enum VentilationState {
         NONE, CLOSED, DIAGNOSTICS_RUN, CLOGGED, EMPTY_TANK, LEAK, FIXED
     }
-
-    
 
     public enum EngineState {
         NONE, DIAGNOSTICS_RUN, STOPPED, REFUELED, FIXED
@@ -54,6 +54,10 @@ public class CommandProcessor {
     public int heatingamount;
     String arguments = "";
 
+    /**
+     * the constructor initializes a dictionary of all possible commands which are in the game.
+     * @param terminal
+     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public CommandProcessor(terminalHandler terminal){
 
@@ -89,14 +93,17 @@ public class CommandProcessor {
 
         commandlookup.put("system.getstatus()", icp::getState);
 
-        commandlookup.put("system.reboot()", icp::reboot);
+        commandlookup.put("system.shutdown()", icp::reboot);
 
         commandlookup.put("clear()", icp::clear);
 
         commandlookup.put("start()", icp::start);
-        commandlookup.put("stop()", icp::stop);
     }
     
+    /**
+     * this method is a complicated process to remove human error and processes the inputted string accordingly, it also saves arguments inputted by the user.
+     * @param command
+     */
     public void process(String command) {
 
         String lowercaseCommand = command.toLowerCase();
@@ -124,13 +131,14 @@ public class CommandProcessor {
     }
 
     /**
-     * InnerCommandProcessor
+     * InnerCommandProcessor, this executes the actual result of each command.
      */
     public class InnerCommandProcessor {
 
-        //TODO:
-        //Make a command where the user can see what condition certain systems are in!
-
+        /**
+         * all these commands have sort of the same process: check if a condition is met if so, then solve a part of a problem in the ship.
+         * I wont be explaining every function as they are pretty obvious for what they do.
+         */
         void ventilationClose() {
             if (ventilationState == VentilationState.NONE) {
 
@@ -407,10 +415,9 @@ public class CommandProcessor {
             mySoundProcessor.playBackgroundMusic();
         }
 
-        void stop() {
-            ActionProcessor.stopActions();
-        }
-
+        /**
+         * now following are help methods which the user can execute to see what commands do what and to learn about the game.
+         */
         void helpTemperature() {
             String text = "To manage the temperature of your ship's coolant system, follow these steps:\n" +
                     "1. Check the current temperature:\n" +
