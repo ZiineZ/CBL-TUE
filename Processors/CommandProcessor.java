@@ -3,9 +3,6 @@ package Processors;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.*;
-
-import javax.swing.SwingUtilities;
 
 import Handlers.ScoreHandler;
 import Handlers.terminalHandler;
@@ -124,7 +121,6 @@ public class CommandProcessor {
             function.run();
         }
         else {
-            System.out.println("command not found!");
             myTerminalHandler.addToTerminal("command not found!");
         }
 
@@ -143,9 +139,6 @@ public class CommandProcessor {
             if (ventilationState == VentilationState.NONE) {
 
                 ventilationState = VentilationState.CLOSED;
-                
-
-                System.out.println(ventilationState);
 
                 myTerminalHandler.addToTerminal("Ventilation system closed. Oxygen loss imminent.");
 

@@ -144,7 +144,6 @@ public class ScoreHandler {
             if (fontFile.exists()) {
                 customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(30f);
                 ge.registerFont(customFont);
-                System.out.println("Font registered: " + customFont.getFontName());
             }
         } catch (FontFormatException | IOException e) {
             JOptionPane.showMessageDialog(null, "Error loading font: " + e.getMessage());

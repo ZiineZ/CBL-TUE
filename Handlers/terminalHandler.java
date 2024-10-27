@@ -4,7 +4,6 @@ import javax.swing.*;
 import Processors.CommandProcessor;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.InputStream;
 import java.io.File;
 import java.io.IOException;
 /**
@@ -115,7 +114,6 @@ public class terminalHandler extends JTextArea {
      * @param command
      */
     public void executeCommand(String command) {
-        System.out.println("Executed command: " + command);
         cp.process(command);
     }
 
