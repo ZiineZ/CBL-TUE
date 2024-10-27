@@ -18,6 +18,8 @@ public class CommandProcessor {
         NONE, CLOSED, DIAGNOSTICS_RUN, CLOGGED, EMPTY_TANK, LEAK, FIXED
     }
 
+    
+
     public enum EngineState {
         NONE, DIAGNOSTICS_RUN, STOPPED, REFUELED, FIXED
     }
@@ -81,29 +83,21 @@ public class CommandProcessor {
         commandlookup.put("start()", icp::start);
         commandlookup.put("stop()", icp::stop);
 
-        
     }
     
     public void process(String command) {
+
         String lowercaseCommand = command.toLowerCase();
-        //TODO save additional arguments given in brackets to a temporary variable and remove them from the expression.
-        Pattern pattern = Pattern.compile("\\((.*?)\\)");
-        Matcher matcher = pattern.matcher(lowercaseCommand);
         String finalcommand = "";
+
+        arguments = lowercaseCommand.substring(lowercaseCommand.indexOf("(")+1, lowercaseCommand.indexOf(")"));
         
+        finalcommand = lowercaseCommand.replaceAll("\\(.*?\\)", "()");
 
-        if(matcher.find()) {
-            arguments = matcher.group(1);
-        }
-
-        if (arguments == "ventilation" || arguments == "fuel"){
-            System.out.println(arguments.toString());;
+        if (arguments.equals("ventilation") || arguments.equals("fuel")) {
             finalcommand = lowercaseCommand;
-        } else {
-            finalcommand = lowercaseCommand.replaceAll("\\(.*?\\)", "()");
         }
-
-        System.out.println(finalcommand);
+        
         Runnable function = commandlookup.get(finalcommand);
         
         if (function != null){
@@ -128,6 +122,10 @@ public class CommandProcessor {
             if (ventilationState == VentilationState.NONE) {
 
                 ventilationState = VentilationState.CLOSED;
+                
+
+                System.out.println(ventilationState);
+
                 myTerminalHandler.addToTerminal("Ventilation system closed. Oxygen loss imminent.");
 
             } else {
@@ -137,6 +135,8 @@ public class CommandProcessor {
 
         void ventilationDiagnostics() {
             
+            System.out.println(ventilationState);
+
             if (ventilationState == VentilationState.CLOSED) {
 
                 String issueText = "";
@@ -333,7 +333,7 @@ public class CommandProcessor {
 
         void start() {
             System.out.println("Start!");
-            ActionProcessor.startActions(myCommandProcessor);
+            ActionProcessor.ventilationAction();
         }
 
         void stop() {

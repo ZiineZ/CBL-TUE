@@ -10,6 +10,7 @@ import java.awt.event.*;
 public class terminalHandler extends JTextArea {
 
     private int immutableLength = 2;
+    CommandProcessor cp = new CommandProcessor(this);
     
     public terminalHandler(JPanel parentPanel) {
         this.setPreferredSize(new Dimension(parentPanel.getWidth(), parentPanel.getHeight()));
@@ -63,7 +64,7 @@ public class terminalHandler extends JTextArea {
 
     public void executeCommand(String command) {
         System.out.println("Executed command: " + command);
-        CommandProcessor cp = new CommandProcessor(this);
+        
         cp.process(command);
     }
 

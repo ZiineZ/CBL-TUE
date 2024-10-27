@@ -33,8 +33,8 @@ public class ActionProcessor {
 
 
     public static void startActions(CommandProcessor myCommandProcessorPassed) {
-        timer.start();
         myCommandProcessor = myCommandProcessorPassed;
+        timer.start();
     }
 
     public static void stopActions() {
