@@ -332,8 +332,9 @@ public class CommandProcessor {
         }
 
         void start() {
-            System.out.println("Start!");
-            ActionProcessor.ventilationAction();
+            ScoreHandler.startTimeCounting();
+            ScoreHandler.startDepthCounting();
+            ActionProcessor.startActions(myCommandProcessor);
         }
 
         void stop() {
